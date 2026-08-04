@@ -435,7 +435,7 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
       </div>
     </div>
     <div class="iconBtn" onclick="toggleDarkMode()" title="深色模式"><span id="darkIcon">🌙</span></div>
-    <div class="iconBtn" onclick="doLogout()" title="登出" style="width:auto;padding:0 14px;border-radius:999px;font-size:13px;">登出</div>
+    <div class="iconBtn" onclick="doLogout()" title="登出" data-i18n="logoutBtn" data-i18n-title="logoutBtn" style="width:auto;padding:0 14px;border-radius:999px;font-size:13px;">登出</div>
   </div>
   <h1 data-i18n="title">F-Mask CMMS &amp; PM Management System｜全資料版 V2</h1>
   <p data-i18n="subtitle">設備維修暨預防保養管理系統｜整合設備維修、PM排程、故障預測、零件庫存、停機成本與報表分析。</p>
@@ -2380,7 +2380,7 @@ function doLogin(){
   enterApp();
 }
 function doLogout(){
-  addAuditLog("登出系統");
+  addAuditLog(TT("登出系統","Logged out","ออกจากระบบ"));
   sessionStorage.removeItem("fmaskSession");
   location.reload();
 }
@@ -3623,6 +3623,7 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  logoutBtn: {zh:"登出", en:"Logout", th:"ออกจากระบบ"},
   toggleDemoInfo: {zh:"顯示／隱藏測試帳號資訊", en:"Show / Hide Test Accounts", th:"แสดง / ซ่อนบัญชีทดสอบ"},
   userModalRoleLabel: {zh:"身分角色", en:"Role", th:"บทบาท"},
   roleAdminOpt: {zh:"Administrator（系統管理員）", en:"Administrator", th:"Administrator (ผู้ดูแลระบบ)"},
