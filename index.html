@@ -3687,6 +3687,7 @@ const VALUE_I18N = {
   "高風險": {en:"High Risk", th:"ความเสี่ยงสูง"},
   "保險絲": {en:"Fuse", th:"ฟิวส์"},
   "其他": {en:"Other", th:"อื่นๆ"},
+  "未分類": {en:"Uncategorized", th:"ไม่ระบุหมวดหมู่"},
   "刀具": {en:"Blade/Cutter", th:"ใบมีด/เครื่องมือตัด"},
   "刀具／切刀": {en:"Blade/Cutter", th:"ใบมีด/เครื่องมือตัด"},
   "刀片": {en:"Blade", th:"ใบมีด"},
@@ -4145,13 +4146,13 @@ function aiOfflineAnswer(question){
     const list=s.valid.filter(r=>(r['機台代碼']||r['機台名稱'])===machine).sort((a,b)=>aiDateValue(b)-aiDateValue(a));
     const high=list.filter(r=>r['風險等級']==='高風險').length,open=list.filter(r=>r['維修狀態']!=='已完成').length;
     const parts={};list.forEach(r=>{const p=r['零件分類']||'未分類';parts[p]=(parts[p]||0)+1;});
-    const top=Object.entries(parts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]+' '+x[1]+(currentLang==='en'?'x':currentLang==='th'?' ครั้ง':'次')).join('、');
+    const top=Object.entries(parts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>displayValue(x[0])+' '+x[1]+(currentLang==='en'?'x':currentLang==='th'?' ครั้ง':'次')).join('、');
     return L.machine(machine, list, high, open, list[0]?.['申請日期'], top);
   }
   if(/總共|總資料|幾筆|total|ทั้งหมด/.test(low))return L.total(s.valid.length, s.machines.size, s.latest?formatDate(s.latest):null);
   if(/高風險|未結案|open|risk|เสี่ยง/.test(low))return L.risk(s.high, s.open, Math.round(s.open/s.valid.length*100));
   if(/設備.*(前|top|排行)|機台.*(前|top|排行)|machine/.test(low))return L.topMachinesLabel+'\n'+s.topMachines.slice(0,5).map((x,i)=>L.rankLine(i,x[0],x[1])).join('\n');
-  if(/零件.*(前|top|排行)|故障.*零件|part/.test(low))return L.topPartsLabel+'\n'+s.topParts.slice(0,5).map((x,i)=>L.rankLine(i,x[0],x[1])).join('\n');
+  if(/零件.*(前|top|排行)|故障.*零件|part/.test(low))return L.topPartsLabel+'\n'+s.topParts.slice(0,5).map((x,i)=>L.rankLine(i,displayValue(x[0]),x[1])).join('\n');
   if(/12個月|十二個月|趨勢|trend|เดือน/.test(low)){
     const arr=s.months.slice(-12); if(!arr.length)return L.monthsShort;
     const first=arr[0][1],last=arr[arr.length-1][1],change=first?Math.round((last-first)/first*100):0;
