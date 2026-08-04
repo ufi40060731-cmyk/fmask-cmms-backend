@@ -2928,13 +2928,27 @@ function renderInventory(){
   }
   const analytics = computePartAnalytics();
   body.innerHTML = "";
-  analytics.parts.slice(0,20).forEach(p => {
+  // 同一種零件分類可能來自好幾台不同機台，先依零件分類彙總，避免庫存表出現同一種零件重複列出
+  const byPart = {};
+  analytics.parts.forEach(p => {
+    if(!byPart[p.part]) byPart[p.part] = { part: p.part, recent90Count: 0 };
+    byPart[p.part].recent90Count += p.recent90Count;
+  });
+  const stockRows = Object.values(byPart).map(p => {
     const h = hashStr(p.part);
     const safety = 3 + (h % 8); // 3~10
     const baseStock = Math.max(0, safety + ((h>>3) % 12) - 6 - p.recent90Count); // 使用量越高庫存越可能偏低
     const adj = getStockAdj(p.part);
     const stock = baseStock + adj;
-    const low = stock < safety;
+    return { part: p.part, recent90Count: p.recent90Count, safety, stock, low: stock < safety };
+  });
+  // 由少到多排序：庫存最緊張、最需要優先採購的零件排在最前面
+  stockRows.sort((a,b) => a.stock - b.stock);
+  stockRows.slice(0,20).forEach(p => {
+    const safety = p.safety;
+    const stock = p.stock;
+    const adj = getStockAdj(p.part);
+    const low = p.low;
     const inputId = "stockQtyInput_" + btoa(encodeURIComponent(p.part)).replace(/=/g,'');
     const tr = document.createElement("tr");
     tr.dataset.part = p.part || "";
