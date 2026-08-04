@@ -579,25 +579,25 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== AI 互動助理 ===================== -->
   <section class="tableBox aiChatSection" id="aiChatSection" data-tab-groups="dashboard analysis">
-    <div class="sectionTitle"><h2>💬 AI 資料互動助理</h2><span class="pill">全部匯入資料即時分析</span></div>
-    <div class="small">可直接詢問總筆數、高風險、未結案、設備排行、零件排行、月份趨勢或指定設備。離線模式不會上傳資料；如要連接真正生成式 AI，請填入你自己的後端網址，不要把 API Key 放進 HTML。</div><br>
+    <div class="sectionTitle"><h2 data-i18n="aiChatTitle">💬 AI 資料互動助理</h2><span class="pill" data-i18n="aiChatPill">全部匯入資料即時分析</span></div>
+    <div class="small" data-i18n="aiChatDesc">可直接詢問總筆數、高風險、未結案、設備排行、零件排行、月份趨勢或指定設備。離線模式不會上傳資料；如要連接真正生成式 AI，請填入你自己的後端網址，不要把 API Key 放進 HTML。</div><br>
     <div class="aiChatLayout">
       <div class="aiChatPanel">
-        <div class="aiChatHead"><strong>F-Mask AI Assistant</strong><span class="aiMode" id="aiModeBadge">離線資料分析</span></div>
+        <div class="aiChatHead"><strong>F-Mask AI Assistant</strong><span class="aiMode" id="aiModeBadge" data-i18n="aiModeOffline">離線資料分析</span></div>
         <div class="aiMessages" id="aiMessages"></div>
         <div class="aiSuggestions">
-          <button class="aiSuggestion" onclick="askAiSuggestion('目前總共有幾筆維修資料？')">總資料筆數</button>
-          <button class="aiSuggestion" onclick="askAiSuggestion('高風險與未結案有幾筆？')">高風險／未結案</button>
-          <button class="aiSuggestion" onclick="askAiSuggestion('維修次數最高的設備前五名')">設備 TOP 5</button>
-          <button class="aiSuggestion" onclick="askAiSuggestion('最常故障的零件前五名')">零件 TOP 5</button>
-          <button class="aiSuggestion" onclick="askAiSuggestion('請分析最近12個月趨勢')">12個月趨勢</button>
+          <button class="aiSuggestion" onclick="askAiSuggestion('目前總共有幾筆維修資料？')" data-i18n="aiSugTotal">總資料筆數</button>
+          <button class="aiSuggestion" onclick="askAiSuggestion('高風險與未結案有幾筆？')" data-i18n="aiSugHighOpen">高風險／未結案</button>
+          <button class="aiSuggestion" onclick="askAiSuggestion('維修次數最高的設備前五名')" data-i18n="aiSugMachineTop5">設備 TOP 5</button>
+          <button class="aiSuggestion" onclick="askAiSuggestion('最常故障的零件前五名')" data-i18n="aiSugPartTop5">零件 TOP 5</button>
+          <button class="aiSuggestion" onclick="askAiSuggestion('請分析最近12個月趨勢')" data-i18n="aiSugTrend12">12個月趨勢</button>
         </div>
-        <div class="aiInputRow"><textarea id="aiQuestion" data-i18n-ph="phAiQuestion" placeholder="例如：ENC/28 維修了幾次？最近一次是何時？"></textarea><button class="aiSendBtn" onclick="sendAiQuestion()">送出</button></div>
+        <div class="aiInputRow"><textarea id="aiQuestion" data-i18n-ph="phAiQuestion" placeholder="例如：ENC/28 維修了幾次？最近一次是何時？"></textarea><button class="aiSendBtn" onclick="sendAiQuestion()" data-i18n="aiSendBtn">送出</button></div>
       </div>
       <aside class="aiConfigBox">
-        <h3>AI 連線模式</h3>
-        <div class="small">預設使用瀏覽器內的離線分析，不需要帳號或金鑰。若已有安全後端，可在下方填入網址；系統只傳送彙整摘要與問題。</div>
-        <label style="margin-top:12px">後端 API 網址（選填）</label>
+        <h3 data-i18n="aiConnModeTitle">AI 連線模式</h3>
+        <div class="small" data-i18n="aiConnModeDesc">預設使用瀏覽器內的離線分析，不需要帳號或金鑰。若已有安全後端，可在下方填入網址；系統只傳送彙整摘要與問題。</div>
+        <label style="margin-top:12px" data-i18n="aiBackendUrlLabel">後端 API 網址（選填）</label>
         <input id="aiBackendUrl" data-i18n-ph="phAiBackendUrl" placeholder="例如：https://your-domain.com/api/ai">
         <button class="actionBtn" style="background:#0f766e;width:100%" onclick="saveAiBackend()">儲存連線設定</button>
         <div class="small" id="aiBackendStatus" style="margin-top:9px">目前：離線資料分析</div>
@@ -941,18 +941,18 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
   <div class="modalBox">
     <span class="modalClose" onclick="closeMachineModal()">✕</span>
     <h2 id="mmTitle">設備履歷</h2>
-    <div class="photoPlaceholder" id="mmPhotoBox" onclick="$('mmPhotoInput').click()" style="cursor:pointer;background-size:cover;background-position:center;">📷 點此上傳設備照片</div>
+    <div class="photoPlaceholder" id="mmPhotoBox" onclick="$('mmPhotoInput').click()" style="cursor:pointer;background-size:cover;background-position:center;" data-i18n="mmUploadPhoto">📷 點此上傳設備照片</div>
     <input type="file" id="mmPhotoInput" accept="image/*" style="display:none" onchange="handleMachinePhotoUpload(event)">
     <div class="modalGrid">
-      <div class="modalStat"><div class="n" id="mmFirstYear">-</div><div class="l">第一次維修年份</div></div>
-      <div class="modalStat"><div class="n" id="mmTotal">-</div><div class="l">累計維修次數</div></div>
-      <div class="modalStat"><div class="n" id="mmAvgDays">-</div><div class="l">平均維修天數</div></div>
-      <div class="modalStat"><div class="n" id="mmStars">-</div><div class="l">最高風險等級</div></div>
+      <div class="modalStat"><div class="n" id="mmFirstYear">-</div><div class="l" data-i18n="mmFirstYear">第一次維修年份</div></div>
+      <div class="modalStat"><div class="n" id="mmTotal">-</div><div class="l" data-i18n="mmTotal">累計維修次數</div></div>
+      <div class="modalStat"><div class="n" id="mmAvgDays">-</div><div class="l" data-i18n="mmAvgDays">平均維修天數</div></div>
+      <div class="modalStat"><div class="n" id="mmStars">-</div><div class="l" data-i18n="mmStars">最高風險等級</div></div>
     </div>
-    <div><strong>位置：</strong>廠區（示範資料，可自行編輯串接）</div>
-    <div><strong>注意事項：</strong>維修前請先關閉電源並上鎖掛牌 (LOTO)</div>
-    <div><strong>操作手冊：</strong>尚未上傳，可於實際系統中連結PDF操作手冊</div>
-    <div style="margin-top:14px;"><strong>設備維修履歷 Timeline：</strong></div>
+    <div><strong data-i18n="mmLocationLabel">位置：</strong><span data-i18n="mmLocationValue">廠區（示範資料，可自行編輯串接）</span></div>
+    <div><strong data-i18n="mmNoticeLabel">注意事項：</strong><span data-i18n="mmNoticeValue">維修前請先關閉電源並上鎖掛牌 (LOTO)</span></div>
+    <div><strong data-i18n="mmManualLabel">操作手冊：</strong><span data-i18n="mmManualValue">尚未上傳，可於實際系統中連結PDF操作手冊</span></div>
+    <div style="margin-top:14px;"><strong data-i18n="mmTimelineLabel">設備維修履歷 Timeline：</strong></div>
     <div id="mmRecent" class="small"></div>
   </div>
 </div>
@@ -2832,7 +2832,7 @@ function loadMachinePhoto(machine){
     box.textContent = "";
   } else {
     box.style.backgroundImage = "";
-    box.textContent = "📷 點此上傳設備照片";
+    box.textContent = t("mmUploadPhoto");
   }
 }
 function handleMachinePhotoUpload(event){
@@ -3509,17 +3509,28 @@ function exportPDF(){
 }
 function exportExcelReport(){
   if(typeof XLSX === "undefined"){ alert(TT("Excel 匯出套件尚未載入","The Excel export library has not loaded yet","ไลบรารีส่งออก Excel ยังโหลดไม่เสร็จ")); return; }
+  const H = {
+    source: TT("來源","Source","แหล่งที่มา"), mesNo: TT("維修單號","Ticket No.","เลขที่ใบแจ้งซ่อม"),
+    isoNo: TT("ISO文件編號","ISO Document No.","เลขที่เอกสาร ISO"), machineName: TT("機台名稱","Machine Name","ชื่อเครื่องจักร"),
+    machineCode: TT("機台代碼","Machine Code","รหัสเครื่องจักร"), reqDate: TT("申請日期","Request Date","วันที่แจ้ง"),
+    repairDays: TT("維修天數","Repair Days","วันซ่อม"), repairStatus: TT("維修狀態","Repair Status","สถานะการซ่อม"),
+    riskLevel: TT("風險等級","Risk Level","ระดับความเสี่ยง"), partCat: TT("零件分類","Part Category","หมวดชิ้นส่วน"),
+    fault: TT("故障說明","Fault Description","รายละเอียดปัญหา"), check: TT("初步檢查結果","Initial Inspection Result","ผลการตรวจสอบเบื้องต้น"),
+    tech: TT("維修人員","Technician","ช่างซ่อม"), cycle: TT("建議保養週期","Suggested PM Cycle","รอบ PM ที่แนะนำ"),
+    priority: TT("改善優先級","Priority","ลำดับความสำคัญ")
+  };
+  const selfAddedLabel = TT("自行新增","Self-Added","เพิ่มเอง"), excelLabel = TT("Excel匯入","Excel Import","นำเข้า Excel");
   const data = filtered().map(r => ({
-    來源: r["_source"]==="added"?"自行新增":"Excel匯入",
-    維修單號: r["維修單號"], ISO文件編號: r["ISO文件編號"], 機台名稱: r["機台名稱"], 機台代碼: r["機台代碼"],
-    申請日期: r["申請日期"], 維修天數: r["維修天數"], 維修狀態: r["維修狀態"], 風險等級: r["風險等級"],
-    零件分類: r["零件分類"], 故障說明: r["故障說明"], 初步檢查結果: r["初步檢查結果"], 維修人員: r["維修人員"] || "",
-    建議保養週期: r["建議保養週期"] || "", 改善優先級: r["改善優先級"] || ""
+    [H.source]: r["_source"]==="added"?selfAddedLabel:excelLabel,
+    [H.mesNo]: r["維修單號"], [H.isoNo]: r["ISO文件編號"], [H.machineName]: displayMachineName(r["機台名稱"]), [H.machineCode]: r["機台代碼"],
+    [H.reqDate]: r["申請日期"], [H.repairDays]: r["維修天數"], [H.repairStatus]: displayValue(r["維修狀態"]), [H.riskLevel]: displayValue(r["風險等級"]),
+    [H.partCat]: displayValue(r["零件分類"]), [H.fault]: r["故障說明"], [H.check]: r["初步檢查結果"], [H.tech]: r["維修人員"] || "",
+    [H.cycle]: r["建議保養週期"] || "", [H.priority]: r["改善優先級"] || ""
   }));
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "維修紀錄");
-  XLSX.writeFile(wb, `F-Mask維修報表_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.utils.book_append_sheet(wb, ws, TT("維修紀錄","Repair Records","รายการซ่อม"));
+  XLSX.writeFile(wb, `${TT("F-Mask維修報表","F-Mask_Repair_Report","F-Mask_รายงานการซ่อม")}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 function exportWordReport(){
   const data = filtered();
@@ -3537,7 +3548,7 @@ function exportWordReport(){
   const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `F-Mask維修報表_${new Date().toISOString().slice(0,10)}.doc`;
+  link.download = `${TT("F-Mask維修報表","F-Mask_Repair_Report","F-Mask_รายงานการซ่อม")}_${new Date().toISOString().slice(0,10)}.doc`;
   link.click();
 }
 
@@ -3680,6 +3691,31 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  aiChatTitle: {zh:"💬 AI 資料互動助理", en:"💬 AI Data Assistant", th:"💬 ผู้ช่วยข้อมูล AI"},
+  aiChatPill: {zh:"全部匯入資料即時分析", en:"Live analysis of all imported data", th:"วิเคราะห์ข้อมูลนำเข้าแบบเรียลไทม์"},
+  aiChatDesc: {zh:"可直接詢問總筆數、高風險、未結案、設備排行、零件排行、月份趨勢或指定設備。離線模式不會上傳資料；如要連接真正生成式 AI，請填入你自己的後端網址，不要把 API Key 放進 HTML。", en:"Ask directly about total records, high-risk cases, open cases, machine/part rankings, monthly trends, or a specific machine. Offline mode never uploads data; to connect a real generative AI, enter your own backend URL below — never put an API key in the HTML.", th:"ถามได้เลยเกี่ยวกับจำนวนรวม เคสความเสี่ยงสูง เคสที่ยังไม่ปิด อันดับเครื่องจักร/ชิ้นส่วน แนวโน้มรายเดือน หรือเครื่องจักรที่ระบุ โหมดออฟไลน์จะไม่อัปโหลดข้อมูล หากต้องการเชื่อมต่อ AI จริง กรอก URL แบ็กเอนด์ของคุณด้านล่าง ห้ามใส่ API Key ใน HTML"},
+  aiModeOffline: {zh:"離線資料分析", en:"Offline Data Analysis", th:"วิเคราะห์ข้อมูลออฟไลน์"},
+  aiSugTotal: {zh:"總資料筆數", en:"Total Records", th:"จำนวนข้อมูลทั้งหมด"},
+  aiSugHighOpen: {zh:"高風險／未結案", en:"High-Risk / Open", th:"ความเสี่ยงสูง / ยังไม่ปิด"},
+  aiSugMachineTop5: {zh:"設備 TOP 5", en:"Top 5 Machines", th:"5 อันดับเครื่องจักร"},
+  aiSugPartTop5: {zh:"零件 TOP 5", en:"Top 5 Parts", th:"5 อันดับชิ้นส่วน"},
+  aiSugTrend12: {zh:"12個月趨勢", en:"12-Month Trend", th:"แนวโน้ม 12 เดือน"},
+  aiSendBtn: {zh:"送出", en:"Send", th:"ส่ง"},
+  aiConnModeTitle: {zh:"AI 連線模式", en:"AI Connection Mode", th:"โหมดการเชื่อมต่อ AI"},
+  aiConnModeDesc: {zh:"預設使用瀏覽器內的離線分析，不需要帳號或金鑰。若已有安全後端，可在下方填入網址；系統只傳送彙整摘要與問題。", en:"Uses offline in-browser analysis by default — no account or key needed. If you have a secure backend, enter its URL below; only a summary and the question are sent.", th:"ค่าเริ่มต้นใช้การวิเคราะห์แบบออฟไลน์ในเบราว์เซอร์ ไม่ต้องใช้บัญชีหรือคีย์ หากมีแบ็กเอนด์ที่ปลอดภัย กรอก URL ด้านล่างได้ ระบบจะส่งเฉพาะสรุปและคำถามเท่านั้น"},
+  aiBackendUrlLabel: {zh:"後端 API 網址（選填）", en:"Backend API URL (Optional)", th:"URL แบ็กเอนด์ API (ไม่บังคับ)"},
+  mmUploadPhoto: {zh:"📷 點此上傳設備照片", en:"📷 Click to Upload Machine Photo", th:"📷 คลิกเพื่ออัปโหลดรูปเครื่องจักร"},
+  mmFirstYear: {zh:"第一次維修年份", en:"First Repair Year", th:"ปีที่ซ่อมครั้งแรก"},
+  mmTotal: {zh:"累計維修次數", en:"Total Repairs", th:"จำนวนซ่อมสะสม"},
+  mmAvgDays: {zh:"平均維修天數", en:"Average Repair Days", th:"จำนวนวันซ่อมเฉลี่ย"},
+  mmStars: {zh:"最高風險等級", en:"Highest Risk Level", th:"ระดับความเสี่ยงสูงสุด"},
+  mmLocationLabel: {zh:"位置：", en:"Location: ", th:"ตำแหน่ง: "},
+  mmLocationValue: {zh:"廠區（示範資料，可自行編輯串接）", en:"Factory Area (demo data, connect to real system as needed)", th:"พื้นที่โรงงาน (ข้อมูลตัวอย่าง เชื่อมต่อระบบจริงได้ตามต้องการ)"},
+  mmNoticeLabel: {zh:"注意事項：", en:"Notice: ", th:"ข้อควรระวัง: "},
+  mmNoticeValue: {zh:"維修前請先關閉電源並上鎖掛牌 (LOTO)", en:"Turn off power and apply lockout/tagout (LOTO) before repair", th:"ปิดไฟและล็อก/ติดป้าย (LOTO) ก่อนซ่อม"},
+  mmManualLabel: {zh:"操作手冊：", en:"Manual: ", th:"คู่มือ: "},
+  mmManualValue: {zh:"尚未上傳，可於實際系統中連結PDF操作手冊", en:"Not uploaded yet — link to a PDF manual in a production system", th:"ยังไม่ได้อัปโหลด สามารถเชื่อมโยงคู่มือ PDF ในระบบจริงได้"},
+  mmTimelineLabel: {zh:"設備維修履歷 Timeline：", en:"Equipment Repair History Timeline:", th:"ไทม์ไลน์ประวัติการซ่อมเครื่องจักร:"},
   clearFilters: {zh:"✕ 清除篩選", en:"✕ Clear Filters", th:"✕ ล้างตัวกรอง"},
   logoutBtn: {zh:"登出", en:"Logout", th:"ออกจากระบบ"},
   toggleDemoInfo: {zh:"顯示／隱藏測試帳號資訊", en:"Show / Hide Test Accounts", th:"แสดง / ซ่อนบัญชีทดสอบ"},
@@ -3824,6 +3860,14 @@ const VALUE_I18N = {
   "高風險": {en:"High Risk", th:"ความเสี่ยงสูง"},
   "保險絲": {en:"Fuse", th:"ฟิวส์"},
   "其他": {en:"Other", th:"อื่นๆ"},
+  "滾輪": {en:"Roller", th:"ลูกกลิ้ง"},
+  "電線/線材": {en:"Wire/Cable", th:"สายไฟ/สายเคเบิล"},
+  "泵浦": {en:"Pump", th:"ปั๊ม"},
+  "電源/電氣": {en:"Power/Electrical", th:"ไฟฟ้า/แหล่งจ่ายไฟ"},
+  "濾材": {en:"Filter Media", th:"วัสดุกรอง"},
+  "感測器": {en:"Sensor", th:"เซ็นเซอร์"},
+  "加熱器": {en:"Heater", th:"เครื่องทำความร้อน"},
+  "閥件": {en:"Valve", th:"วาล์ว"},
   "未分類": {en:"Uncategorized", th:"ไม่ระบุหมวดหมู่"},
   "刀具": {en:"Blade/Cutter", th:"ใบมีด/เครื่องมือตัด"},
   "刀具／切刀": {en:"Blade/Cutter", th:"ใบมีด/เครื่องมือตัด"},
