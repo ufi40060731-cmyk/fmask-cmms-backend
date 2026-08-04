@@ -384,7 +384,7 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
       <option value="supervisor">生產主管（僅可查看儀表板）</option>
     </select>
     <button onclick="doLogin()">登入</button>
-    <button class="hintBtn" onclick="toggleLoginHint()" type="button">顯示／隱藏測試帳號資訊</button>
+    <button class="hintBtn" onclick="toggleLoginHint()" type="button" data-i18n="toggleDemoInfo">顯示／隱藏測試帳號資訊</button>
     <div class="loginHint" id="loginHint">
       <strong>系統管理員</strong><br>帳號：admin　密碼：admin123<br><br>
       <strong>設備工程師</strong><br>帳號：engineer　密碼：eng123<br><br>
@@ -921,7 +921,7 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
       <div><label data-i18n="userModalNameLabel">姓名 / 顯示名稱</label><input id="userModalName" data-i18n-ph="phUserName" placeholder="例如：設備工程師"></div>
       <div><label data-i18n="userModalAccountLabel">帳號</label><input id="userModalUser" data-i18n-ph="phUserAccount" placeholder="例如：engineer2"></div>
       <div><label data-i18n="userModalPassLabel">密碼</label><input id="userModalPass" data-i18n-ph="phUserPass" placeholder="例如：Eng@2026"></div>
-      <div><label>身分角色</label><select id="userModalRole"><option value="admin">Administrator（系統管理員）</option><option value="engineer">Equipment Engineer（設備工程師）</option><option value="supervisor">Production Supervisor（生產主管）</option></select></div>
+      <div><label data-i18n="userModalRoleLabel">身分角色</label><select id="userModalRole"><option value="admin" data-i18n="roleAdminOpt">Administrator（系統管理員）</option><option value="engineer" data-i18n="roleEngineerOpt">Equipment Engineer（設備工程師）</option><option value="supervisor" data-i18n="roleSupervisorOpt">Production Supervisor（生產主管）</option></select></div>
       <div class="full"><label>帳號狀態</label><select id="userModalActive"><option value="true">啟用</option><option value="false">停用</option></select></div>
     </div>
     <div class="userModalActions">
@@ -3612,6 +3612,11 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  toggleDemoInfo: {zh:"顯示／隱藏測試帳號資訊", en:"Show / Hide Test Accounts", th:"แสดง / ซ่อนบัญชีทดสอบ"},
+  userModalRoleLabel: {zh:"身分角色", en:"Role", th:"บทบาท"},
+  roleAdminOpt: {zh:"Administrator（系統管理員）", en:"Administrator", th:"Administrator (ผู้ดูแลระบบ)"},
+  roleEngineerOpt: {zh:"Equipment Engineer（設備工程師）", en:"Equipment Engineer", th:"Equipment Engineer (วิศวกรเครื่องจักร)"},
+  roleSupervisorOpt: {zh:"Production Supervisor（生產主管）", en:"Production Supervisor", th:"Production Supervisor (หัวหน้าฝ่ายผลิต)"},
   repairCostTitle: {zh:"💸 維修成本分析", en:"💸 Repair Cost Analysis", th:"💸 วิเคราะห์ต้นทุนซ่อม"},
   repairCostPill: {zh:"零件＋人工＋停機成本", en:"Parts + Labor + Downtime Cost", th:"ต้นทุนอะไหล่ + แรงงาน + หยุดเครื่อง"},
   repairCostDesc: {zh:"成本為示範估算：零件依風險等級與零件類型估算，人工以維修天數 × 1,200 元，停機以每日日停機成本計算。", en:"Costs are demo estimates: parts are estimated by risk level and part type, labor is repair days × 1,200, and downtime is calculated by daily downtime cost.", th:"ต้นทุนเป็นค่าประเมินสำหรับสาธิต: อะไหล่ประเมินตามระดับความเสี่ยงและประเภทชิ้นส่วน ค่าแรง = วันซ่อม × 1,200 และต้นทุนหยุดเครื่องคำนวณตามต้นทุนต่อวัน"},
