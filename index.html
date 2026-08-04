@@ -2151,6 +2151,7 @@ function importExcel(){
 function clearImportedExcel(){
   const s = getSession();
   if(s && s.role !== "admin"){ alert(TT("僅 Admin 管理者可還原內建資料","Only Administrators can restore the built-in data","เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถคืนค่าข้อมูลเดิมได้")); return; }
+  if(!confirm(TT("確定要還原成內建示範資料嗎？這會清除所有已匯入的 Excel 資料與 PM 排程紀錄，此動作無法復原！建議先用「資料備份」功能備份目前資料。","Restore built-in demo data? This will erase all imported Excel data and PM schedule records — this cannot be undone! Consider backing up your data first using the Backup feature.","ยืนยันคืนค่าเป็นข้อมูลตัวอย่างที่มีในระบบ? การกระทำนี้จะลบข้อมูล Excel ที่นำเข้าและตารางเวลา PM ทั้งหมด ไม่สามารถย้อนกลับได้! แนะนำให้สำรองข้อมูลก่อนด้วยฟังก์ชันสำรองข้อมูล"))) return;
   localStorage.removeItem("importedExcelRecords");
   localStorage.removeItem("pmScheduleState");
   records = defaultRecords.slice();
@@ -2251,6 +2252,10 @@ function addRecord(){
     alert(t("addRequireFields"));
     return;
   }
+  if(records.some(r => r["維修單號"] === record["維修單號"])){
+    alert(TT(`維修單號「${record["維修單號"]}」已經存在，請確認是否重複輸入，或換一個單號。`,`Ticket number "${record["維修單號"]}" already exists. Please check for duplicate entry or use a different ticket number.`,`หมายเลข "${record["維修單號"]}" มีอยู่แล้ว กรุณาตรวจสอบว่าซ้ำหรือใช้หมายเลขอื่น`));
+    return;
+  }
   const enteredDate = new Date(record["申請日期"]);
   const oneYearAhead = new Date(); oneYearAhead.setFullYear(oneYearAhead.getFullYear()+1);
   if(isNaN(enteredDate.getTime()) || enteredDate > oneYearAhead){
@@ -2296,6 +2301,7 @@ function deleteSelectedAddedRecords(){
   const toDelete = new Set();
   document.querySelectorAll(".addedChk").forEach(c => { if(c.checked) toDelete.add(Number(c.dataset.idx)); });
   if(toDelete.size === 0){ alert(t("noSelection")); return; }
+  if(!confirm(TT(`確定要刪除選取的 ${toDelete.size} 筆維修紀錄嗎？此動作無法復原。`,`Delete the selected ${toDelete.size} repair record(s)? This cannot be undone.`,`ยืนยันลบรายการซ่อมที่เลือก ${toDelete.size} รายการ? ไม่สามารถย้อนกลับได้`))) return;
   added = added.filter((_, idx) => !toDelete.has(idx));
   localStorage.setItem("addedMaintenanceRecords", JSON.stringify(added));
   alert(t("deleteDone"));
