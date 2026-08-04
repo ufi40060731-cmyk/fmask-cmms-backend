@@ -1773,7 +1773,7 @@ function renderTable(data){
     tr.innerHTML = `
       <td>${r["_source"] === "added" ? t("selfAdded") : t("excelImportedSrc")}</td>
       <td>${escapeHtml(r["維修單號"] ?? "")}</td><td>${escapeHtml(r["ISO文件編號"] ?? "")}</td>
-      <td>${escapeHtml(r["機台名稱"] ?? "")}</td><td>${escapeHtml(r["機台代碼"] ?? "")}</td>
+      <td>${escapeHtml(displayMachineName(r["機台名稱"] ?? ""))}</td><td>${escapeHtml(r["機台代碼"] ?? "")}</td>
       <td>${escapeHtml(r["申請日期"] ?? "")}</td><td>${escapeHtml(r["維修天數"] ?? "")}</td>
       <td><span class="${badgeStatus(r["維修狀態"])}">${escapeHtml(displayValue(r["維修狀態"] ?? ""))}</span></td>
       <td><span class="${badgeRisk(r["風險等級"])}">${escapeHtml(displayValue(r["風險等級"] ?? ""))}</span></td>
@@ -1896,7 +1896,7 @@ function renderForecastPm(analytics){
     const execNote = state.note || "";
     tr.innerHTML = `
       <td class="${rank<=10?'rankTop':''}">${rank}</td>
-      <td><strong>${escapeHtml(r.machine || "")}</strong><br><span class="small">${escapeHtml(displayValue(r.part || ""))}</span></td>
+      <td><strong>${escapeHtml(displayMachineName(r.machine || ""))}</strong><br><span class="small">${escapeHtml(displayValue(r.part || ""))}</span></td>
       <td>${r.cumCount}</td>
       <td>${r.recent90Count}</td>
       <td>${r.highRiskCount}</td>
@@ -2376,7 +2376,7 @@ function doLogin(){
   err.textContent = "";
   const meta = ROLE_META[acc.role] || {};
   sessionStorage.setItem("fmaskSession", JSON.stringify({ user:u, name:acc.name || u, role:acc.role, label:meta.label || acc.role }));
-  addAuditLog(`登入系統（${meta.label || acc.role}）`);
+  addAuditLog(TT(`登入系統（${meta.label || acc.role}）`, `Logged in (${meta.label || acc.role})`, `เข้าสู่ระบบ (${meta.label || acc.role})`));
   enterApp();
 }
 function doLogout(){
@@ -2750,10 +2750,10 @@ function renderHealthList(){
     div.className = "healthRow";
     div.onclick = () => openMachineModal(r.machine);
     div.innerHTML = `
-      <div class="healthName">${r.machine}</div>
+      <div class="healthName">${escapeHtml(displayMachineName(r.machine))}</div>
       <div class="healthBarWrap"><div class="healthBarFill" style="width:${r.health}%;background:${healthColor(r.health)};">${r.health}%</div></div>
-      <div class="healthPct">${r.count} 次</div>
-      <div class="healthStars" title="高風險比例">${stars}</div>
+      <div class="healthPct">${r.count}${TT(" 次"," repairs"," ครั้ง")}</div>
+      <div class="healthStars" title="${TT('高風險比例','High-risk ratio','สัดส่วนความเสี่ยงสูง')}">${stars}</div>
     `;
     list.appendChild(div);
   });
@@ -2773,7 +2773,7 @@ function openMachineModal(machine){
   const highCount = list.filter(r=>r["風險等級"]==="高風險").length;
   const ratio = highCount/list.length;
   const starCount = Math.max(1, Math.round(ratio*5));
-  $("mmTitle").textContent = `🏷️ ${machine}　${TT('設備履歷','Machine History','ประวัติเครื่องจักร')}`;
+  $("mmTitle").textContent = `🏷️ ${displayMachineName(machine)}　${TT('設備履歷','Machine History','ประวัติเครื่องจักร')}`;
   $("mmFirstYear").textContent = firstYear;
   $("mmTotal").textContent = list.length + TT(" 次"," times"," ครั้ง");
   $("mmAvgDays").textContent = avgDays + TT(" 天"," days"," วัน");
@@ -2926,22 +2926,24 @@ function fmtDateInput(dt){ return `${dt.getFullYear()}-${String(dt.getMonth()+1)
 function initCalendarDropdowns(){
   const ySel = $("calYearSelect"), mSel = $("calMonthSelect"), dSel = $("calDaySelect");
   if(!ySel || !mSel || !dSel) return;
-  if(!ySel.dataset.ready){
+  {
     let yHtml = "";
     const baseYear = realToday.getFullYear();
+    const prevY = ySel.value;
     for(let y = baseYear - 6; y <= baseYear + 10; y++){
-      yHtml += `<option value="${y}">${y}年</option>`;
+      yHtml += `<option value="${y}">${TT(y+"年", String(y), String(y))}</option>`;
     }
     ySel.innerHTML = yHtml;
-    ySel.dataset.ready = "1";
+    if(prevY) ySel.value = prevY;
   }
-  if(!mSel.dataset.ready){
+  {
     let mHtml = "";
+    const prevM = mSel.value;
     for(let m = 1; m <= 12; m++){
-      mHtml += `<option value="${m}">${String(m).padStart(2,"0")}月</option>`;
+      mHtml += `<option value="${m}">${TT(String(m).padStart(2,"0")+"月", String(m).padStart(2,"0"), String(m).padStart(2,"0"))}</option>`;
     }
     mSel.innerHTML = mHtml;
-    mSel.dataset.ready = "1";
+    if(prevM) mSel.value = prevM;
   }
   refreshCalDayOptions(false);
 }
@@ -2954,7 +2956,7 @@ function refreshCalDayOptions(syncSelected=true){
   const maxDay = new Date(y, m, 0).getDate();
   let dHtml = "";
   for(let d = 1; d <= maxDay; d++){
-    dHtml += `<option value="${d}">${String(d).padStart(2,"0")}日</option>`;
+    dHtml += `<option value="${d}">${TT(String(d).padStart(2,"0")+"日", String(d).padStart(2,"0"), String(d).padStart(2,"0"))}</option>`;
   }
   dSel.innerHTML = dHtml;
   dSel.value = String(Math.min(currentDay, maxDay));
@@ -3801,6 +3803,42 @@ const VALUE_I18N = {
   "鼻樑線": {en:"Nose Wire", th:"ลวดจมูก"},
   "齒輪": {en:"Gear", th:"เฟือง"}
 };
+const MACHINE_WORD_I18N = [
+  [/口罩機（L-LOOP耳帶）/g, {en:"Mask Machine (L-LOOP Ear Loop)", th:"เครื่องผลิตหน้ากาก (สายคล้องหู L-LOOP)"}],
+  [/口罩機（繩帶式）/g, {en:"Mask Machine (Cord Type)", th:"เครื่องผลิตหน้ากาก (แบบเชือก)"}],
+  [/口罩機（耳掛式）/g, {en:"Mask Machine (Ear-Hook Type)", th:"เครื่องผลิตหน้ากาก (แบบคล้องหู)"}],
+  [/口罩機（Garter 1:1鬆緊帶）/g, {en:"Mask Machine (Garter 1:1 Elastic)", th:"เครื่องผลิตหน้ากาก (ยางยืด Garter 1:1)"}],
+  [/超音波機（打魔鬼氈）/g, {en:"Ultrasonic Machine (Velcro Punching)", th:"เครื่องอัลตราโซนิก (เจาะเวลโคร)"}],
+  [/超音波機（沖壓魔鬼氈）/g, {en:"Ultrasonic Machine (Velcro Stamping)", th:"เครื่องอัลตราโซนิก (ปั๊มเวลโคร)"}],
+  [/分條機（裁切包邊布）/g, {en:"Slitting Machine (Binding Fabric Cutting)", th:"เครื่องตัดแถบ (ตัดผ้าขอบ)"}],
+  [/沖床機（口罩沖壓）/g, {en:"Punch Press (Mask Stamping)", th:"เครื่องปั๊ม (ปั๊มหน้ากาก)"}],
+  [/空壓機（螺桿式）/g, {en:"Air Compressor (Screw Type)", th:"เครื่องอัดอากาศ (แบบสกรู)"}],
+  [/口罩機/g, {en:"Mask Machine", th:"เครื่องผลิตหน้ากาก"}],
+  [/超音波機/g, {en:"Ultrasonic Machine", th:"เครื่องอัลตราโซนิก"}],
+  [/分條機/g, {en:"Slitting Machine", th:"เครื่องตัดแถบ"}],
+  [/薄膜分條機/g, {en:"Film Slitting Machine", th:"เครื่องตัดแถบฟิล์ม"}],
+  [/沖床機/g, {en:"Punch Press", th:"เครื่องปั๊ม"}],
+  [/空壓機/g, {en:"Air Compressor", th:"เครื่องอัดอากาศ"}],
+  [/空調/g, {en:"Air Conditioning", th:"เครื่องปรับอากาศ"}],
+  [/風幕機/g, {en:"Air Curtain", th:"ม่านอากาศ"}],
+  [/燈管/g, {en:"Light Tube", th:"หลอดไฟ"}],
+  [/電源箱/g, {en:"Power Box", th:"กล่องไฟ"}],
+  [/封口機/g, {en:"Sealing Machine", th:"เครื่องซีล"}]
+];
+function displayMachineName(name){
+  const v = cleanCell(name);
+  if(!v || currentLang === "zh") return v;
+  let out = v;
+  let changed = false;
+  MACHINE_WORD_I18N.forEach(([re, tr]) => {
+    if(re.test(out)){
+      out = out.replace(re, tr[currentLang] || tr.en);
+      changed = true;
+    }
+    re.lastIndex = 0;
+  });
+  return changed ? out : v;
+}
 function displayValue(v){
   if(currentLang === "zh") return v;
   const e = VALUE_I18N[v];
