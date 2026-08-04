@@ -2649,7 +2649,7 @@ function openNotification(type){
     setFilterValue("risk", "高風險");
     setFilterValue("status", "");
     scrollToSection("repairTableSection");
-    html = data.highItems.slice(0,30).map(r => `<div class="notifDetailItem" onclick="focusRepairRow('${String(r["維修單號"]||"").replace(/'/g,"\\'")}')"><strong>${r["維修單號"]||"無單號"}</strong>｜${r["機台名稱"]||""}<br><span class="small">${r["維修狀態"]||""}｜${r["申請日期"]||""}｜${r["故障說明"]||""}</span></div>`).join("") || "<div class='small'>目前沒有高風險未結案。</div>";
+    html = data.highItems.slice(0,30).map(r => `<div class="notifDetailItem" onclick="focusRepairRow('${String(r["維修單號"]||"").replace(/'/g,"\\'")}')"><strong>${escapeHtml(r["維修單號"]||TT("無單號","No ticket number","ไม่มีหมายเลข"))}</strong>｜${escapeHtml(r["機台名稱"]||"")}<br><span class="small">${escapeHtml(displayValue(r["維修狀態"]||""))}｜${escapeHtml(r["申請日期"]||"")}｜${escapeHtml(r["故障說明"]||"")}</span></div>`).join("") || `<div class='small'>${TT("目前沒有高風險未結案。","No high-risk open cases.","ไม่มีเคสความเสี่ยงสูงที่ยังไม่ปิด")}</div>`;
   }else if(type === "wait"){
     title = `📦 待料件數（${data.waitItems.length}）`;
     setFilterValue("status", "待料");
@@ -3451,14 +3451,14 @@ function exportExcelReport(){
 }
 function exportWordReport(){
   const data = filtered();
-  let rows = data.map(r => `<tr><td>${r["維修單號"]||""}</td><td>${r["機台名稱"]||""}</td><td>${r["申請日期"]||""}</td><td>${r["維修天數"]||""}</td><td>${r["維修狀態"]||""}</td><td>${r["風險等級"]||""}</td><td>${r["故障說明"]||""}</td></tr>`).join("");
+  let rows = data.map(r => `<tr><td>${escapeHtml(r["維修單號"]||"")}</td><td>${escapeHtml(r["機台名稱"]||"")}</td><td>${escapeHtml(r["申請日期"]||"")}</td><td>${escapeHtml(r["維修天數"]||"")}</td><td>${escapeHtml(displayValue(r["維修狀態"]||""))}</td><td>${escapeHtml(displayValue(r["風險等級"]||""))}</td><td>${escapeHtml(r["故障說明"]||"")}</td></tr>`).join("");
   const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-  <head><meta charset="utf-8"><title>F-Mask 維修報表</title></head>
+  <head><meta charset="utf-8"><title>${TT("F-Mask 維修報表","F-Mask Repair Report","รายงานการซ่อม F-Mask")}</title></head>
   <body>
-    <h1>F-Mask 設備維修報表</h1>
-    <p>匯出時間：${new Date().toLocaleString()}　共 ${data.length} 筆</p>
+    <h1>${TT("F-Mask 設備維修報表","F-Mask Equipment Repair Report","รายงานการซ่อมอุปกรณ์ F-Mask")}</h1>
+    <p>${TT("匯出時間：","Exported: ","ส่งออกเมื่อ: ")}${new Date().toLocaleString()}　${TT("共 "+data.length+" 筆","Total: "+data.length,"รวม "+data.length+" รายการ")}</p>
     <table border="1" cellspacing="0" cellpadding="4">
-      <tr><th>維修單號</th><th>機台名稱</th><th>申請日期</th><th>維修天數</th><th>維修狀態</th><th>風險等級</th><th>故障說明</th></tr>
+      <tr><th>${TT('維修單號','Ticket No.','เลขที่ใบแจ้งซ่อม')}</th><th>${TT('機台名稱','Machine Name','ชื่อเครื่องจักร')}</th><th>${TT('申請日期','Request Date','วันที่แจ้ง')}</th><th>${TT('維修天數','Repair Days','วันซ่อม')}</th><th>${TT('維修狀態','Repair Status','สถานะการซ่อม')}</th><th>${TT('風險等級','Risk Level','ระดับความเสี่ยง')}</th><th>${TT('故障說明','Fault Description','รายละเอียดปัญหา')}</th></tr>
       ${rows}
     </table>
   </body></html>`;
