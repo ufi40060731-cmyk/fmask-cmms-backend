@@ -2555,6 +2555,7 @@ function saveUserModal(){
     const old = users[idx];
     if(!old) return;
     if(current && old.user === current.user && active === false){ alert(TT("不能停用目前登入中的自己","You cannot disable the account you are currently logged in as","ไม่สามารถปิดใช้งานบัญชีที่คุณกำลังเข้าสู่ระบบอยู่ได้")); return; }
+    if(current && old.user === current.user && old.role === "admin" && role !== "admin"){ alert(TT("不能把目前登入中的自己的角色改成非管理員，這樣會讓你自己失去使用者管理權限。請用另一個管理員帳號來調整此帳號。","You cannot change your own role away from Administrator — doing so would lock you out of user management. Use a different administrator account to change this account.","ไม่สามารถเปลี่ยนบทบาทของบัญชีที่คุณกำลังเข้าสู่ระบบออกจากผู้ดูแลระบบได้ เพราะจะทำให้คุณเข้าถึงการจัดการผู้ใช้ไม่ได้ กรุณาใช้บัญชีผู้ดูแลระบบอื่นเพื่อปรับบัญชีนี้")); return; }
     users[idx] = { ...old, name, user, pass, role, label:m.label, zh:m.zh, active };
     if(current && old.user === current.user){
       sessionStorage.setItem("fmaskSession", JSON.stringify({ ...current, user, name, role, label:m.label }));
@@ -2574,7 +2575,7 @@ function resetManagedPassword(i){
   const users = getManagedUsers();
   const u = users[i];
   if(!u) return;
-  const pass = prompt(`請輸入 ${u.user} 的新密碼`, u.pass || "");
+  const pass = prompt(TT(`請輸入 ${u.user} 的新密碼`,`Enter a new password for ${u.user}`,`กรอกรหัสผ่านใหม่สำหรับ ${u.user}`), u.pass || "");
   if(pass === null) return;
   if(!pass.trim()){ alert(TT("密碼不可空白","Password cannot be blank","รหัสผ่านห้ามเว้นว่าง")); return; }
   users[i] = { ...u, pass:pass.trim() };
@@ -2589,6 +2590,11 @@ function toggleUserActive(i){
   if(!users[i]) return;
   const current = getSession();
   if(current && users[i].user === current.user){ alert(TT("不能停用目前登入中的自己","You cannot disable the account you are currently logged in as","ไม่สามารถปิดใช้งานบัญชีที่คุณกำลังเข้าสู่ระบบอยู่ได้")); return; }
+  const willDisable = users[i].active !== false;
+  if(willDisable && users[i].role === "admin"){
+    const otherActiveAdmins = users.filter((u,idx) => idx !== i && u.role === "admin" && u.active !== false).length;
+    if(otherActiveAdmins === 0){ alert(TT("這是系統裡唯一啟用中的管理員帳號，不能停用，否則會沒有人能管理使用者。請先新增另一個管理員帳號。","This is the only active Administrator account. It cannot be disabled, or no one would be able to manage users. Please create another administrator account first.","นี่คือบัญชีผู้ดูแลระบบที่เปิดใช้งานอยู่เพียงบัญชีเดียว ไม่สามารถปิดใช้งานได้ มิฉะนั้นจะไม่มีใครจัดการผู้ใช้ได้ กรุณาสร้างบัญชีผู้ดูแลระบบอื่นก่อน")); return; }
+  }
   users[i].active = users[i].active === false ? true : false;
   saveManagedUsers(users);
   addAuditLog(`${users[i].active ? "啟用" : "停用"}使用者：${users[i].user}`);
@@ -2600,7 +2606,11 @@ function deleteManagedUser(i){
   if(!u) return;
   const current = getSession();
   if(current && u.user === current.user){ alert(TT("不能刪除目前登入中的自己","You cannot delete the account you are currently logged in as","ไม่สามารถลบบัญชีที่คุณกำลังเข้าสู่ระบบอยู่ได้")); return; }
-  if(!confirm(`確定刪除帳號 ${u.user}？`)) return;
+  if(u.role === "admin" && u.active !== false){
+    const otherActiveAdmins = users.filter((x,idx) => idx !== i && x.role === "admin" && x.active !== false).length;
+    if(otherActiveAdmins === 0){ alert(TT("這是系統裡唯一啟用中的管理員帳號，不能刪除，否則會沒有人能管理使用者。請先新增另一個管理員帳號。","This is the only active Administrator account. It cannot be deleted, or no one would be able to manage users. Please create another administrator account first.","นี่คือบัญชีผู้ดูแลระบบที่เปิดใช้งานอยู่เพียงบัญชีเดียว ไม่สามารถลบได้ มิฉะนั้นจะไม่มีใครจัดการผู้ใช้ได้ กรุณาสร้างบัญชีผู้ดูแลระบบอื่นก่อน")); return; }
+  }
+  if(!confirm(TT(`確定刪除帳號 ${u.user}？`,`Delete account ${u.user}?`,`ยืนยันลบบัญชี ${u.user}?`))) return;
   users.splice(i,1);
   saveManagedUsers(users);
   addAuditLog(`刪除使用者：${u.user}`);
