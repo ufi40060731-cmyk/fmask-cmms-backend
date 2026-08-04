@@ -2921,6 +2921,21 @@ function resetStockQty(part){
 function renderInventory(){
   const body = $("inventoryBody");
   if(!body) return;
+  if(!body.dataset.delegated){
+    body.addEventListener("click", (e) => {
+      const row = e.target.closest(".stockAdjustRow");
+      if(!row) return;
+      const part = row.dataset.part;
+      if(e.target.classList.contains("stockQuickBtn")){
+        quickAdjustStock(part, Number(e.target.dataset.delta));
+      }else if(e.target.classList.contains("stockApplyBtn")){
+        adjustStockQty(part);
+      }else if(e.target.classList.contains("stockResetBtn")){
+        resetStockQty(part);
+      }
+    });
+    body.dataset.delegated = "1";
+  }
   const analytics = computePartAnalytics();
   body.innerHTML = "";
   analytics.parts.slice(0,20).forEach(p => {
@@ -2941,15 +2956,15 @@ function renderInventory(){
       <td>${p.recent90Count}</td>
       <td>${low ? `<span class="badge high">⚠ ${TT('建議採購','Reorder Suggested','แนะนำสั่งซื้อ')}</span>` : `<span class="badge low">${TT('正常','Normal','ปกติ')}</span>`}</td>
       <td style="white-space:nowrap;">
-        <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
-          <button class="actionBtn stockPurchaseBtn" style="background:#dc2626;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',-5)" title="${TT('扣減 5','Subtract 5','ลด 5')}">−5</button>
-          <button class="actionBtn stockPurchaseBtn" style="background:#dc2626;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',-1)" title="${TT('扣減 1','Subtract 1','ลด 1')}">−1</button>
+        <div class="stockAdjustRow" data-part="${escapeHtml(p.part)}" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="-5" style="background:#dc2626;padding:5px 8px;font-size:11px;" title="${TT('扣減 5','Subtract 5','ลด 5')}">−5</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="-1" style="background:#dc2626;padding:5px 8px;font-size:11px;" title="${TT('扣減 1','Subtract 1','ลด 1')}">−1</button>
           <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="${TT('自訂數量','Custom qty','จำนวนกำหนดเอง')}" style="width:88px;padding:6px 8px;display:inline-block;">
-          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',1)" title="${TT('增加 1','Add 1','เพิ่ม 1')}">+1</button>
-          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',5)" title="${TT('增加 5','Add 5','เพิ่ม 5')}">+5</button>
-          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',10)" title="${TT('增加 10','Add 10','เพิ่ม 10')}">+10</button>
-          <button class="actionBtn stockPurchaseBtn" style="background:#0f766e;padding:6px 10px;font-size:12px;" onclick="adjustStockQty('${p.part.replace(/'/g,"\'")}')">${TT('套用自訂數量','Apply Custom','ใช้จำนวนกำหนดเอง')}</button>
-          <button class="actionBtn stockPurchaseBtn" style="background:#64748b;padding:6px 10px;font-size:12px;" onclick="resetStockQty('${p.part.replace(/'/g,"\'")}')">${TT('重設','Reset','รีเซ็ต')}</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="1" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 1','Add 1','เพิ่ม 1')}">+1</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="5" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 5','Add 5','เพิ่ม 5')}">+5</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="10" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 10','Add 10','เพิ่ม 10')}">+10</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockApplyBtn" style="background:#0f766e;padding:6px 10px;font-size:12px;">${TT('套用自訂數量','Apply Custom','ใช้จำนวนกำหนดเอง')}</button>
+          <button type="button" class="actionBtn stockPurchaseBtn stockResetBtn" style="background:#64748b;padding:6px 10px;font-size:12px;">${TT('重設','Reset','รีเซ็ต')}</button>
         </div>
       </td>
     `;
