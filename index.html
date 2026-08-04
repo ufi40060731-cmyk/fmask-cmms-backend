@@ -2889,15 +2889,12 @@ function hashStr(s){
 }
 function stockAdjKey(part){ return "stockAdj:" + part; }
 function getStockAdj(part){ return Number(localStorage.getItem(stockAdjKey(part))) || 0; }
-function addStockQty(part){
+function quickAdjustStock(part, delta){
   const s = getSession();
-  if(s && s.role === "supervisor"){ alert(TT("Production Supervisor 僅可檢視，無法登記入庫","Production Supervisor can only view; cannot record stock-in","หัวหน้าฝ่ายผลิตดูได้อย่างเดียว ไม่สามารถบันทึกการรับเข้าสต็อกได้")); return; }
-  const input = $("stockQtyInput_" + btoa(encodeURIComponent(part)).replace(/=/g,''));
-  const qty = input ? Number(input.value) : 0;
-  if(!qty || qty <= 0){ alert(TT("請輸入大於 0 的入庫數量","Please enter a stock-in quantity greater than 0","กรุณากรอกจำนวนรับเข้าที่มากกว่า 0")); return; }
+  if(s && s.role === "supervisor"){ alert(TT("Production Supervisor 僅可檢視，無法調整庫存","Production Supervisor can only view; cannot adjust stock","หัวหน้าฝ่ายผลิตดูได้อย่างเดียว ไม่สามารถปรับสต็อกได้")); return; }
   const cur = getStockAdj(part);
-  localStorage.setItem(stockAdjKey(part), String(cur + qty));
-  alert(TT("已入庫 +","Stocked in +","รับเข้าสต็อกแล้ว +") + qty + TT("，目前累計調整量：",", current cumulative adjustment: ", ", ยอดปรับปรุงสะสมปัจจุบัน: ") + (cur + qty));
+  const next = cur + delta;
+  localStorage.setItem(stockAdjKey(part), String(next));
   renderInventory();
 }
 function adjustStockQty(part){
@@ -2909,7 +2906,7 @@ function adjustStockQty(part){
   const cur = getStockAdj(part);
   const next = cur + qty;
   localStorage.setItem(stockAdjKey(part), String(next));
-  alert((qty > 0 ? "已增加 +" : "已扣回 ") + qty + "，目前累計調整量：" + next);
+  alert((qty > 0 ? TT("已增加 +","Added +","เพิ่มแล้ว +") : TT("已扣回 ","Subtracted ","หักออก ")) + qty + TT("，目前累計調整量：",", current cumulative adjustment: ", ", ยอดปรับปรุงสะสมปัจจุบัน: ") + next);
   renderInventory();
 }
 function resetStockQty(part){
@@ -2944,10 +2941,16 @@ function renderInventory(){
       <td>${p.recent90Count}</td>
       <td>${low ? `<span class="badge high">⚠ ${TT('建議採購','Reorder Suggested','แนะนำสั่งซื้อ')}</span>` : `<span class="badge low">${TT('正常','Normal','ปกติ')}</span>`}</td>
       <td style="white-space:nowrap;">
-        <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="±數量" style="width:78px;padding:6px 8px;display:inline-block;">
-        <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:6px 10px;font-size:12px;" onclick="addStockQty('${p.part.replace(/'/g,"\'")}')">✔ 入庫</button>
-        <button class="actionBtn stockPurchaseBtn" style="background:#f59e0b;padding:6px 10px;font-size:12px;" onclick="adjustStockQty('${p.part.replace(/'/g,"\'")}')">± 調整</button>
-        <button class="actionBtn stockPurchaseBtn" style="background:#64748b;padding:6px 10px;font-size:12px;" onclick="resetStockQty('${p.part.replace(/'/g,"\'")}')">重設</button>
+        <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
+          <button class="actionBtn stockPurchaseBtn" style="background:#dc2626;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',-5)" title="${TT('扣減 5','Subtract 5','ลด 5')}">−5</button>
+          <button class="actionBtn stockPurchaseBtn" style="background:#dc2626;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',-1)" title="${TT('扣減 1','Subtract 1','ลด 1')}">−1</button>
+          <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="${TT('自訂數量','Custom qty','จำนวนกำหนดเอง')}" style="width:88px;padding:6px 8px;display:inline-block;">
+          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',1)" title="${TT('增加 1','Add 1','เพิ่ม 1')}">+1</button>
+          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',5)" title="${TT('增加 5','Add 5','เพิ่ม 5')}">+5</button>
+          <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:5px 8px;font-size:11px;" onclick="quickAdjustStock('${p.part.replace(/'/g,"\'")}',10)" title="${TT('增加 10','Add 10','เพิ่ม 10')}">+10</button>
+          <button class="actionBtn stockPurchaseBtn" style="background:#0f766e;padding:6px 10px;font-size:12px;" onclick="adjustStockQty('${p.part.replace(/'/g,"\'")}')">${TT('套用自訂數量','Apply Custom','ใช้จำนวนกำหนดเอง')}</button>
+          <button class="actionBtn stockPurchaseBtn" style="background:#64748b;padding:6px 10px;font-size:12px;" onclick="resetStockQty('${p.part.replace(/'/g,"\'")}')">${TT('重設','Reset','รีเซ็ต')}</button>
+        </div>
       </td>
     `;
     body.appendChild(tr);
