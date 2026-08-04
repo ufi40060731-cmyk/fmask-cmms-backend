@@ -1801,7 +1801,7 @@ function renderCharts(data){
   machineChart = makeChart(machineChart,"machineChart","bar",mach.map(x=>x[0]),mach.map(x=>x[1]),t("repairCount"),{indexAxis:"y",plugins:{legend:{display:false}}});
 
   const part = Object.entries(countBy(data,"零件分類")).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  partChart = makeChart(partChart,"partChart","bar",part.map(x=>x[0]),part.map(x=>x[1]),t("count"),{plugins:{legend:{display:false}}});
+  partChart = makeChart(partChart,"partChart","bar",part.map(x=>displayValue(x[0])),part.map(x=>x[1]),t("count"),{plugins:{legend:{display:false}}});
 
   const monthObj = {};
   data.forEach(r => {
@@ -3233,22 +3233,26 @@ function renderAiInsight(){
   const topRisk = analytics.parts[0];
   const topMachines = Object.entries(machineGroups).sort((a,b)=>b[1]-a[1]).slice(0,3);
   const highRiskParts = Object.entries(riskGroups).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  const forecastTop = analytics.parts.slice(0,3).map(p => `${p.part}（風險 ${p.score}，建議 ${formatDate(p.nextDate)}）`).join("、") || IL.none;
+  const forecastTop = analytics.parts.slice(0,3).map(p => TT(
+    `${displayValue(p.part)}（風險 ${p.score}，建議 ${formatDate(p.nextDate)}）`,
+    `${displayValue(p.part)} (risk ${p.score}, suggested ${formatDate(p.nextDate)})`,
+    `${displayValue(p.part)} (ความเสี่ยง ${p.score}, แนะนำ ${formatDate(p.nextDate)})`
+  )).join(TT("、", ", ", ", ")) || IL.none;
 
   let html = `<div style="display:grid;gap:8px;">`;
   html += `<div>${IL.calcBasis(formatMonth(latest))}</div>`;
   if(topTrend){
     const color = topTrend.change > 0 ? "#dc2626" : "#16a34a";
-    html += `<div>${IL.trend(topTrend.part, topTrend.cur, topTrend.prev, topTrend.change, color)}</div>`;
+    html += `<div>${IL.trend(displayValue(topTrend.part), topTrend.cur, topTrend.prev, topTrend.change, color)}</div>`;
   }
   if(topRisk){
-    html += `<div>${IL.topPm(topRisk.part, topRisk.score, formatDate(topRisk.nextDate))}</div>`;
+    html += `<div>${IL.topPm(displayValue(topRisk.part), topRisk.score, formatDate(topRisk.nextDate))}</div>`;
   }
   if(highRiskParts.length){
-    html += `<div>${IL.highRisk(highRiskParts.map(x=>`<strong>${x[0]}</strong> ${x[1]}${IL.unit}`).join("、"))}</div>`;
+    html += `<div>${IL.highRisk(highRiskParts.map(x=>`<strong>${escapeHtml(displayValue(x[0]))}</strong> ${x[1]}${IL.unit}`).join(TT("、", ", ", ", ")))}</div>`;
   }
   if(topMachines.length){
-    html += `<div>${IL.topMachines(topMachines.map(x=>`<strong>${x[0]}</strong> ${x[1]}${IL.unit}`).join("、"))}</div>`;
+    html += `<div>${IL.topMachines(topMachines.map(x=>`<strong>${escapeHtml(x[0])}</strong> ${x[1]}${IL.unit}`).join(TT("、", ", ", ", ")))}</div>`;
   }
   html += `<div>${IL.forecast(forecastTop)}</div>`;
   html += `<div>${IL.action}</div>`;
@@ -3405,7 +3409,7 @@ function renderProjectEnhancements(analytics){
   const top = analytics.parts[0];
   const highOpen = records.filter(r=>r["風險等級"]==="高風險" && r["維修狀態"]!=="已完成").length;
   if($("monthlyReportSummary")){
-    $("monthlyReportSummary").innerHTML = `${R.month}<strong>${latestMonth || "-"}</strong><br>${R.monthCount}<strong>${monthRecords.length}</strong>${R.cases}<br>${R.highOpen}<strong style="color:#dc2626">${highOpen}</strong>${R.cases}<br>${R.pmRate}<strong>${pmRate}%</strong><br>${R.nextTop}<strong>${top ? top.part : R.notEnough}</strong><br>${R.advice}`;
+    $("monthlyReportSummary").innerHTML = `${R.month}<strong>${latestMonth || "-"}</strong><br>${R.monthCount}<strong>${monthRecords.length}</strong>${R.cases}<br>${R.highOpen}<strong style="color:#dc2626">${highOpen}</strong>${R.cases}<br>${R.pmRate}<strong>${pmRate}%</strong><br>${R.nextTop}<strong>${top ? escapeHtml(displayValue(top.part)) : R.notEnough}</strong><br>${R.advice}`;
   }
 }
 function exportMonthlyReport(){
