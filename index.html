@@ -670,8 +670,8 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 故障熱點 / BI 熱力圖 ===================== -->
   <section class="tableBox" style="margin-bottom:20px;" data-tab-groups="analysis">
-    <div class="sectionTitle"><h2>🔥 故障熱點分析（零件分類 × 風險等級）</h2><span class="pill">顏色越深越需要注意</span></div>
-    <div class="small">依「零件分類」與「風險等級」交叉統計次數，顏色深淺代表案件數量，快速找出最常出問題的零件與風險組合。</div>
+    <div class="sectionTitle"><h2 data-i18n="hotspotTitle">🔥 故障熱點分析（零件分類 × 風險等級）</h2><span class="pill" data-i18n="hotspotPill">顏色越深越需要注意</span></div>
+    <div class="small" data-i18n="hotspotDesc">依「零件分類」與「風險等級」交叉統計次數，顏色深淺代表案件數量，快速找出最常出問題的零件與風險組合。</div>
     <br>
     <div class="heatWrap"><table class="heatTable" id="heatTable"></table></div>
   </section>
@@ -691,25 +691,25 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== PM 日曆 ===================== -->
   <section class="tableBox" id="pmCalendarSection" style="margin-bottom:20px;" data-tab-groups="pm">
-    <div class="sectionTitle"><h2>📅 PM保養日曆</h2><span class="pill" id="calMonthPill">本月</span></div>
-    <div class="small">依「零組件更換預測」的下次建議日期標示在日曆上，點一下日期可查看當天建議執行的PM項目。今日日期會以藍色外框標示。</div>
+    <div class="sectionTitle"><h2 data-i18n="pmCalTitle">📅 PM保養日曆</h2><span class="pill" id="calMonthPill">本月</span></div>
+    <div class="small" data-i18n="pmCalDesc">依「零組件更換預測」的下次建議日期標示在日曆上，點一下日期可查看當天建議執行的PM項目。今日日期會以藍色外框標示。</div>
     <div class="calJumpBar">
-      <button class="actionBtn" style="background:#0f766e;padding:8px 14px;" onclick="changeCalMonth(-1)">‹ 上個月</button>
-      <button class="actionBtn" style="background:#64748b;padding:8px 14px;" onclick="goToCurrentMonth()">回到今天</button>
-      <button class="actionBtn" style="background:#0f766e;padding:8px 14px;" onclick="changeCalMonth(1)">下個月 ›</button>
+      <button class="actionBtn" style="background:#0f766e;padding:8px 14px;" onclick="changeCalMonth(-1)" data-i18n="prevMonth">‹ 上個月</button>
+      <button class="actionBtn" style="background:#64748b;padding:8px 14px;" onclick="goToCurrentMonth()" data-i18n="backToToday">回到今天</button>
+      <button class="actionBtn" style="background:#0f766e;padding:8px 14px;" onclick="changeCalMonth(1)" data-i18n="nextMonth">下個月 ›</button>
       <div class="dateBox calSelectBox">
-        <label>年份</label>
+        <label data-i18n="yearLabel">年份</label>
         <select id="calYearSelect" onchange="refreshCalDayOptions()"></select>
       </div>
       <div class="dateBox calSelectBox smallSelect">
-        <label>月份</label>
+        <label data-i18n="monthLabel">月份</label>
         <select id="calMonthSelect" onchange="refreshCalDayOptions()"></select>
       </div>
       <div class="dateBox calSelectBox smallSelect">
-        <label>日期</label>
+        <label data-i18n="dayLabel">日期</label>
         <select id="calDaySelect"></select>
       </div>
-      <button class="actionBtn" style="background:#16a34a;padding:8px 14px;" onclick="jumpCalendarFromSelects()">跳到日期</button>
+      <button class="actionBtn" style="background:#16a34a;padding:8px 14px;" onclick="jumpCalendarFromSelects()" data-i18n="jumpToDate">跳到日期</button>
       <span class="small" id="calSelectedLabel">目前選擇：今天</span>
     </div>
     <div class="calGrid" id="calGrid"></div>
@@ -718,23 +718,23 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 停機成本 ===================== -->
   <section class="tableBox" style="margin-bottom:20px;" data-tab-groups="inventory analysis">
-    <div class="sectionTitle"><h2>💰 停機成本估算</h2><span class="pill">向主管證明系統價值</span></div>
+    <div class="sectionTitle"><h2 data-i18n="downtimeCostTitle">💰 停機成本估算</h2><span class="pill" data-i18n="downtimeCostPill">向主管證明系統價值</span></div>
     <div class="small">
-      每日停機成本（元）：
+      <span data-i18n="downtimeCostPerDayLabel">每日停機成本（元）：</span>
       <input id="downtimeCostPerDay" type="number" value="5000" style="width:120px;display:inline-block;padding:8px;">
-      <button class="actionBtn" style="background:#0f766e;" onclick="renderDowntimeCost()">重新計算</button>
+      <button class="actionBtn" style="background:#0f766e;" onclick="renderDowntimeCost()" data-i18n="recalculate">重新計算</button>
     </div>
     <br>
     <div class="cards" style="grid-template-columns:repeat(3,1fr);">
-      <div class="card bad"><span>累計停機天數</span><strong id="dcDays">0</strong></div>
-      <div class="card bad"><span>估算總停機成本(元)</span><strong id="dcTotal">0</strong></div>
-      <div class="card bad"><span>其中高風險造成成本(元)</span><strong id="dcHighCost">0</strong></div>
+      <div class="card bad"><span data-i18n="totalDowntimeDays">累計停機天數</span><strong id="dcDays">0</strong></div>
+      <div class="card bad"><span data-i18n="estTotalDowntimeCost">估算總停機成本(元)</span><strong id="dcTotal">0</strong></div>
+      <div class="card bad"><span data-i18n="estHighRiskCost">其中高風險造成成本(元)</span><strong id="dcHighCost">0</strong></div>
     </div>
   </section>
 
   <!-- ===================== 維修人員績效 ===================== -->
   <section class="tableBox" style="margin-bottom:20px;" data-tab-groups="analysis">
-    <div class="sectionTitle"><h2>👷 維修人員績效</h2><span class="pill">需搭配「維修人員」欄位</span></div>
+    <div class="sectionTitle"><h2 data-i18n="techPerfTitle">👷 維修人員績效</h2><span class="pill" data-i18n="techPerfPill">需搭配「維修人員」欄位</span></div>
     <div id="techPerf" class="small"></div>
   </section>
 
@@ -746,26 +746,26 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
     <div class="tableWrap">
       <table>
         <thead>
-          <tr><th>姓名</th><th>帳號</th><th>密碼</th><th>角色</th><th>權限說明</th><th>狀態</th><th>操作</th></tr>
+          <tr><th data-i18n="thName">姓名</th><th data-i18n="thAccount">帳號</th><th data-i18n="thPassword">密碼</th><th data-i18n="thRole">角色</th><th data-i18n="thPermission">權限說明</th><th data-i18n="thStatus">狀態</th><th data-i18n="thAction">操作</th></tr>
         </thead>
         <tbody id="userMgmtBody"></tbody>
       </table>
     </div>
     <div style="margin-top:18px;">
-      <div class="sectionTitle" style="margin-bottom:6px;"><h3 style="margin:0;">🧾 操作紀錄</h3></div>
+      <div class="sectionTitle" style="margin-bottom:6px;"><h3 style="margin:0;" data-i18n="auditLogTitle">🧾 操作紀錄</h3></div>
       <div id="auditLogBox" class="small" style="max-height:220px;overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;line-height:1.8;"></div>
     </div>
   </section>
 
   <!-- ===================== 報表匯出 ===================== -->
   <section class="tableBox" style="margin-bottom:20px;" data-tab-groups="report">
-    <div class="sectionTitle"><h2>🖨️ 報表匯出</h2><span class="pill">主管最愛</span></div>
-    <div class="small">依目前篩選條件匯出資料表，方便列印或提供給主管審閱。</div>
+    <div class="sectionTitle"><h2 data-i18n="reportExportTitle">🖨️ 報表匯出</h2><span class="pill" data-i18n="reportExportPill">主管最愛</span></div>
+    <div class="small" data-i18n="reportExportDesc">依目前篩選條件匯出資料表，方便列印或提供給主管審閱。</div>
     <br>
     <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <button class="exportBtn" style="background:#dc2626;" onclick="exportPDF()">📄 下載 PDF</button>
-      <button class="exportBtn" style="background:#16a34a;" onclick="exportExcelReport()">📊 下載 Excel</button>
-      <button class="exportBtn" style="background:#0f766e;" onclick="exportWordReport()">📝 下載 Word</button>
+      <button class="exportBtn" style="background:#dc2626;" onclick="exportPDF()" data-i18n="downloadPdf">📄 下載 PDF</button>
+      <button class="exportBtn" style="background:#16a34a;" onclick="exportExcelReport()" data-i18n="downloadExcel">📊 下載 Excel</button>
+      <button class="exportBtn" style="background:#0f766e;" onclick="exportWordReport()" data-i18n="downloadWord">📝 下載 Word</button>
     </div>
   </section>
 
@@ -3031,7 +3031,7 @@ function renderCalendar(){
   const grid = $("calGrid");
   if(!grid) return;
   const y = calViewYear, m = calViewMonth;
-  $("calMonthPill").textContent = `${y}年${m+1}月`;
+  $("calMonthPill").textContent = TT(`${y}年${m+1}月`, `${["January","February","March","April","May","June","July","August","September","October","November","December"][m]} ${y}`, `${["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"][m]} ${y}`);
   updateCalendarDateUi();
   const firstDay = new Date(y, m, 1);
   const startOffset = firstDay.getDay();
@@ -3608,6 +3608,41 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  hotspotTitle: {zh:"🔥 故障熱點分析（零件分類 × 風險等級）", en:"🔥 Failure Hotspot Analysis (Part Category × Risk Level)", th:"🔥 วิเคราะห์จุดเสียบ่อย (หมวดชิ้นส่วน × ระดับความเสี่ยง)"},
+  hotspotPill: {zh:"顏色越深越需要注意", en:"Darker color = needs more attention", th:"สีเข้มกว่า = ควรให้ความสนใจมากกว่า"},
+  hotspotDesc: {zh:"依「零件分類」與「風險等級」交叉統計次數，顏色深淺代表案件數量，快速找出最常出問題的零件與風險組合。", en:"Counts are cross-tabulated by part category and risk level. Color intensity represents case volume to quickly identify the most problematic part/risk combinations.", th:"นับข้อมูลแยกตามหมวดชิ้นส่วนและระดับความเสี่ยง ความเข้มสีแทนจำนวนเคส เพื่อหาชิ้นส่วนและระดับความเสี่ยงที่มีปัญหาบ่อย"},
+  pmCalTitle: {zh:"📅 PM保養日曆", en:"📅 PM Calendar", th:"📅 ปฏิทิน PM"},
+  pmCalDesc: {zh:"依「零組件更換預測」的下次建議日期標示在日曆上，點一下日期可查看當天建議執行的PM項目。今日日期會以藍色外框標示。", en:"The predicted next replacement date for each part is marked on the calendar. Click a date to see the PM items suggested for that day. Today's date is highlighted with a blue border.", th:"วันที่แนะนำถัดไปสำหรับการเปลี่ยนชิ้นส่วนจะแสดงบนปฏิทิน คลิกวันที่เพื่อดูรายการ PM ที่แนะนำในวันนั้น วันนี้จะมีกรอบสีฟ้า"},
+  prevMonth: {zh:"‹ 上個月", en:"‹ Previous Month", th:"‹ เดือนก่อน"},
+  backToToday: {zh:"回到今天", en:"Back to Today", th:"กลับไปวันนี้"},
+  nextMonth: {zh:"下個月 ›", en:"Next Month ›", th:"เดือนถัดไป ›"},
+  yearLabel: {zh:"年份", en:"Year", th:"ปี"},
+  monthLabel: {zh:"月份", en:"Month", th:"เดือน"},
+  dayLabel: {zh:"日期", en:"Day", th:"วัน"},
+  jumpToDate: {zh:"跳到日期", en:"Jump to Date", th:"ไปยังวันที่"},
+  downtimeCostTitle: {zh:"💰 停機成本估算", en:"💰 Downtime Cost Estimation", th:"💰 ประเมินต้นทุนหยุดเครื่อง"},
+  downtimeCostPill: {zh:"向主管證明系統價值", en:"Show system value to managers", th:"แสดงคุณค่าระบบให้หัวหน้าเห็น"},
+  downtimeCostPerDayLabel: {zh:"每日停機成本（元）：", en:"Downtime Cost Per Day: ", th:"ต้นทุนหยุดเครื่องต่อวัน: "},
+  recalculate: {zh:"重新計算", en:"Recalculate", th:"คำนวณใหม่"},
+  totalDowntimeDays: {zh:"累計停機天數", en:"Total Downtime Days", th:"จำนวนวันหยุดเครื่องสะสม"},
+  estTotalDowntimeCost: {zh:"估算總停機成本(元)", en:"Estimated Total Downtime Cost", th:"ต้นทุนหยุดเครื่องรวมโดยประมาณ"},
+  estHighRiskCost: {zh:"其中高風險造成成本(元)", en:"Cost Caused by High-Risk Cases", th:"ต้นทุนจากเคสความเสี่ยงสูง"},
+  techPerfTitle: {zh:"👷 維修人員績效", en:"👷 Technician Performance", th:"👷 ประสิทธิภาพช่างซ่อม"},
+  techPerfPill: {zh:"需搭配「維修人員」欄位", en:"Requires a Technician field", th:"ต้องมีคอลัมน์ช่างซ่อม"},
+  thName: {zh:"姓名", en:"Name", th:"ชื่อ"},
+  thAccount: {zh:"帳號", en:"Account", th:"บัญชี"},
+  thPassword: {zh:"密碼", en:"Password", th:"รหัสผ่าน"},
+  thRole: {zh:"角色", en:"Role", th:"บทบาท"},
+  thPermission: {zh:"權限說明", en:"Permissions", th:"สิทธิ์การใช้งาน"},
+  thStatus: {zh:"狀態", en:"Status", th:"สถานะ"},
+  thAction: {zh:"操作", en:"Actions", th:"การดำเนินการ"},
+  auditLogTitle: {zh:"🧾 操作紀錄", en:"🧾 Audit Log", th:"🧾 บันทึกการทำงาน"},
+  reportExportTitle: {zh:"🖨️ 報表匯出", en:"🖨️ Report Export", th:"🖨️ ส่งออกรายงาน"},
+  reportExportPill: {zh:"主管最愛", en:"Manager Favorite", th:"ฟังก์ชันสำหรับหัวหน้า"},
+  reportExportDesc: {zh:"依目前篩選條件匯出資料表，方便列印或提供給主管審閱。", en:"Export the table based on current filters for printing or manager review.", th:"ส่งออกตารางตามเงื่อนไขกรองปัจจุบัน เพื่อพิมพ์หรือส่งให้หัวหน้าตรวจ"},
+  downloadPdf: {zh:"📄 下載 PDF", en:"📄 Download PDF", th:"📄 ดาวน์โหลด PDF"},
+  downloadExcel: {zh:"📊 下載 Excel", en:"📊 Download Excel", th:"📊 ดาวน์โหลด Excel"},
+  downloadWord: {zh:"📝 下載 Word", en:"📝 Download Word", th:"📝 ดาวน์โหลด Word"},
   aiPmSuggestTitle: {zh:"🎯 AI優先保養建議", en:"🎯 AI Priority Maintenance Suggestions", th:"🎯 คำแนะนำ PM สำคัญจาก AI"},
   mgmtMonthlyReportTitle: {zh:"📄 主管月報摘要", en:"📄 Management Monthly Summary", th:"📄 สรุปรายงานรายเดือนสำหรับหัวหน้า"},
   downloadMgmtReport: {zh:"下載主管月報 Word", en:"Download Management Report (Word)", th:"ดาวน์โหลดรายงาน Word"},
