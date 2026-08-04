@@ -840,7 +840,7 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
           <option value="高風險" data-i18n="riskHigh">高風險</option>
         </select>
       </div>
-      <div><label data-i18n="partCategory">零件分類</label><input id="newPart" data-i18n-ph="phPart" placeholder="例如 氣缸、軸承、刀片"></div>
+      <div><label data-i18n="partCategory">零件分類</label><input id="newPart" list="partCategoryList" data-i18n-ph="phPart" placeholder="例如 氣缸、軸承、刀片"><datalist id="partCategoryList"></datalist></div>
       <div><label data-i18n="faultDesc">故障說明</label><input id="newFault" data-i18n-ph="phFault" placeholder="例如 氣缸漏氣"></div>
       <div><label data-i18n="checkResult">初步檢查結果</label><input id="newCheck" data-i18n-ph="phCheck" placeholder="例如 可修復"></div>
       <div><label data-i18n="technicianCol">維修人員</label><input id="newTechnician" data-i18n-ph="phTechnician" placeholder="例如 王小明"></div>
@@ -2000,6 +2000,15 @@ function renderMonthlyDashboard(analytics){
 
 /* ================= 篩選選單 ================= */
 function rebuildFilterOptions(){
+  const dl = $("partCategoryList");
+  if(dl){
+    dl.innerHTML = "";
+    uniq("零件分類").forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p;
+      dl.appendChild(opt);
+    });
+  }
   const prev = {};
   ["year","risk","status","machine","part"].forEach(id => {
     const sel = $(id);
