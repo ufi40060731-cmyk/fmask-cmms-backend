@@ -625,10 +625,10 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 維修成本分析 ===================== -->
   <section class="tableBox" id="repairCostSection" style="margin-bottom:20px;" data-tab-groups="inventory analysis">
-    <div class="sectionTitle"><h2>💸 維修成本分析</h2><span class="pill">零件＋人工＋停機成本</span></div>
-    <div class="small">成本為示範估算：零件依風險等級與零件類型估算，人工以維修天數 × 1,200 元，停機以每日日停機成本計算。</div>
+    <div class="sectionTitle"><h2 data-i18n="repairCostTitle">💸 維修成本分析</h2><span class="pill" data-i18n="repairCostPill">零件＋人工＋停機成本</span></div>
+    <div class="small" data-i18n="repairCostDesc">成本為示範估算：零件依風險等級與零件類型估算，人工以維修天數 × 1,200 元，停機以每日日停機成本計算。</div>
     <br>
-    <div class="tableWrap" style="max-height:360px;"><table class="costTableMini"><thead><tr><th>零件分類</th><th>維修件數</th><th>零件成本</th><th>人工成本</th><th>停機成本</th><th>合計</th><th>建議</th></tr></thead><tbody id="costAnalysisBody"></tbody></table></div>
+    <div class="tableWrap" style="max-height:360px;"><table class="costTableMini"><thead><tr><th data-i18n="partCategory">零件分類</th><th data-i18n="costRepairCount">維修件數</th><th data-i18n="costPartCost">零件成本</th><th data-i18n="costLaborCost">人工成本</th><th data-i18n="costDowntimeCost">停機成本</th><th data-i18n="costTotal">合計</th><th data-i18n="costSuggestion">建議</th></tr></thead><tbody id="costAnalysisBody"></tbody></table></div>
   </section>
 
   <!-- ===================== 零組件更換預測 + PM保養排程 ===================== -->
@@ -662,8 +662,8 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 設備健康度 ===================== -->
   <section class="tableBox" style="margin-bottom:20px;" data-tab-groups="analysis pm">
-    <div class="sectionTitle"><h2>🩺 設備健康度</h2><span class="pill">分數越低越優先PM</span></div>
-    <div class="small">健康度 = 100 − (維修次數佔比×40% + 高風險比例×40% + 平均維修天數佔比×20%)，分數越低代表該設備越需要優先安排PM保養。點一下設備名稱可查看完整設備履歷。</div>
+    <div class="sectionTitle"><h2 data-i18n="healthTitle">🩺 設備健康度</h2><span class="pill" data-i18n="healthPill">分數越低越優先PM</span></div>
+    <div class="small" data-i18n="healthDesc">健康度 = 100 − (維修次數佔比×40% + 高風險比例×40% + 平均維修天數佔比×20%)，分數越低代表該設備越需要優先安排PM保養。點一下設備名稱可查看完整設備履歷。</div>
     <br>
     <div id="healthList"></div>
   </section>
@@ -678,12 +678,12 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 零件庫存 (CMMS) ===================== -->
   <section class="tableBox" id="inventorySection" style="margin-bottom:20px;" data-tab-groups="inventory">
-    <div class="sectionTitle"><h2>📦 零件庫存管理</h2><span class="pill">CMMS 安全庫存</span></div>
-    <div class="small">依零件分類的維修頻率換算模擬庫存與安全庫存量（示範用途，實際庫存請串接真實進銷存資料）。低於安全庫存會標示「建議採購」。</div>
+    <div class="sectionTitle"><h2 data-i18n="inventoryTitle">📦 零件庫存管理</h2><span class="pill" data-i18n="inventoryPill">CMMS 安全庫存</span></div>
+    <div class="small" data-i18n="inventoryDesc">依零件分類的維修頻率換算模擬庫存與安全庫存量（示範用途，實際庫存請串接真實進銷存資料）。低於安全庫存會標示「建議採購」。</div>
     <br>
     <div class="tableWrap" style="max-height:420px;">
       <table>
-        <thead><tr><th>零件分類</th><th>目前庫存</th><th>安全庫存</th><th>近90天用量</th><th>狀態</th><th>採購入庫</th></tr></thead>
+        <thead><tr><th data-i18n="partCategory">零件分類</th><th data-i18n="stockCurrent">目前庫存</th><th data-i18n="stockSafety">安全庫存</th><th data-i18n="stockUsage90">近90天用量</th><th data-i18n="thStatus">狀態</th><th data-i18n="stockPurchase">採購入庫</th></tr></thead>
         <tbody id="inventoryBody"></tbody>
       </table>
     </div>
@@ -740,9 +740,9 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
 
   <!-- ===================== 使用者管理 / RBAC（Administrator Only）===================== -->
   <section class="tableBox adminUserOnly" style="margin-bottom:20px;" data-tab-groups="report">
-    <div class="sectionTitle"><h2>👥 使用者管理</h2><span class="pill">Administrator Only｜RBAC 權限控管</span></div>
-    <div class="small">系統管理員可查看、建立、編輯與刪除 Demo 使用者帳號。此功能使用瀏覽器 localStorage 示範，正式上線時應改接後端資料庫並加密密碼。</div><br>
-    <div style="margin-bottom:12px;"><button class="actionBtn" style="background:#0f766e;" onclick="addManagedUser()">＋ 新增使用者</button></div>
+    <div class="sectionTitle"><h2 data-i18n="userMgmtTitle">👥 使用者管理</h2><span class="pill" data-i18n="userMgmtPill">Administrator Only｜RBAC 權限控管</span></div>
+    <div class="small" data-i18n="userMgmtDesc">系統管理員可查看、建立、編輯與刪除 Demo 使用者帳號。此功能使用瀏覽器 localStorage 示範，正式上線時應改接後端資料庫並加密密碼。</div><br>
+    <div style="margin-bottom:12px;"><button class="actionBtn" style="background:#0f766e;" onclick="addManagedUser()" data-i18n="addUserBtn">＋ 新增使用者</button></div>
     <div class="tableWrap">
       <table>
         <thead>
@@ -1896,7 +1896,7 @@ function renderForecastPm(analytics){
     const execNote = state.note || "";
     tr.innerHTML = `
       <td class="${rank<=10?'rankTop':''}">${rank}</td>
-      <td><strong>${escapeHtml(r.machine || "")}</strong><br><span class="small">${escapeHtml(r.part || "")}</span></td>
+      <td><strong>${escapeHtml(r.machine || "")}</strong><br><span class="small">${escapeHtml(displayValue(r.part || ""))}</span></td>
       <td>${r.cumCount}</td>
       <td>${r.recent90Count}</td>
       <td>${r.highRiskCount}</td>
@@ -2895,7 +2895,7 @@ function renderInventory(){
       <td class="${low?'stockLow':'stockOk'}">${stock}${adj ? ` <span class="small" style="font-size:11px;">(+${adj}已入庫)</span>` : ""}</td>
       <td>${safety}</td>
       <td>${p.recent90Count}</td>
-      <td>${low ? '<span class="badge high">⚠ 建議採購</span>' : '<span class="badge low">正常</span>'}</td>
+      <td>${low ? `<span class="badge high">⚠ ${TT('建議採購','Reorder Suggested','แนะนำสั่งซื้อ')}</span>` : `<span class="badge low">${TT('正常','Normal','ปกติ')}</span>`}</td>
       <td style="white-space:nowrap;">
         <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="±數量" style="width:78px;padding:6px 8px;display:inline-block;">
         <button class="actionBtn stockPurchaseBtn" style="background:#16a34a;padding:6px 10px;font-size:12px;" onclick="addStockQty('${p.part.replace(/'/g,"\'")}')">✔ 入庫</button>
@@ -3400,7 +3400,7 @@ function renderProjectEnhancements(analytics){
   const monthCost = monthRecords.reduce((sum,r)=> sum + estimatePartUnitCost(r["零件分類"], r["風險等級"]) + ((Number(r["維修天數"])||1)*1200) + ((Number(r["維修天數"])||1)*perDay), 0);
   if($("monthCostVal")) $("monthCostVal").textContent = monthCost.toLocaleString();
   if($("costAnalysisBody")){
-    $("costAnalysisBody").innerHTML = costRows.slice(0,15).map(r=>`<tr><td>${r.part}</td><td>${r.count}</td><td>${r.partCost.toLocaleString()}</td><td>${r.laborCost.toLocaleString()}</td><td>${r.downtimeCost.toLocaleString()}</td><td><strong>${r.total.toLocaleString()}</strong></td><td>${r.high>0?R.priorityPm:R.routine}</td></tr>`).join("");
+    $("costAnalysisBody").innerHTML = costRows.slice(0,15).map(r=>`<tr><td>${escapeHtml(displayValue(r.part))}</td><td>${r.count}</td><td>${r.partCost.toLocaleString()}</td><td>${r.laborCost.toLocaleString()}</td><td>${r.downtimeCost.toLocaleString()}</td><td><strong>${r.total.toLocaleString()}</strong></td><td>${r.high>0?R.priorityPm:R.routine}</td></tr>`).join("");
   }
   const top = analytics.parts[0];
   const highOpen = records.filter(r=>r["風險等級"]==="高風險" && r["維修狀態"]!=="已完成").length;
@@ -3608,6 +3608,29 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  repairCostTitle: {zh:"💸 維修成本分析", en:"💸 Repair Cost Analysis", th:"💸 วิเคราะห์ต้นทุนซ่อม"},
+  repairCostPill: {zh:"零件＋人工＋停機成本", en:"Parts + Labor + Downtime Cost", th:"ต้นทุนอะไหล่ + แรงงาน + หยุดเครื่อง"},
+  repairCostDesc: {zh:"成本為示範估算：零件依風險等級與零件類型估算，人工以維修天數 × 1,200 元，停機以每日日停機成本計算。", en:"Costs are demo estimates: parts are estimated by risk level and part type, labor is repair days × 1,200, and downtime is calculated by daily downtime cost.", th:"ต้นทุนเป็นค่าประเมินสำหรับสาธิต: อะไหล่ประเมินตามระดับความเสี่ยงและประเภทชิ้นส่วน ค่าแรง = วันซ่อม × 1,200 และต้นทุนหยุดเครื่องคำนวณตามต้นทุนต่อวัน"},
+  costRepairCount: {zh:"維修件數", en:"Repair Count", th:"จำนวนการซ่อม"},
+  costPartCost: {zh:"零件成本", en:"Part Cost", th:"ต้นทุนอะไหล่"},
+  costLaborCost: {zh:"人工成本", en:"Labor Cost", th:"ต้นทุนแรงงาน"},
+  costDowntimeCost: {zh:"停機成本", en:"Downtime Cost", th:"ต้นทุนหยุดเครื่อง"},
+  costTotal: {zh:"合計", en:"Total", th:"รวม"},
+  costSuggestion: {zh:"建議", en:"Suggestion", th:"คำแนะนำ"},
+  healthTitle: {zh:"🩺 設備健康度", en:"🩺 Machine Health", th:"🩺 สุขภาพเครื่องจักร"},
+  healthPill: {zh:"分數越低越優先PM", en:"Lower score = higher PM priority", th:"คะแนนต่ำ = ควรทำ PM ก่อน"},
+  healthDesc: {zh:"健康度 = 100 − (維修次數佔比×40% + 高風險比例×40% + 平均維修天數佔比×20%)，分數越低代表該設備越需要優先安排PM保養。點一下設備名稱可查看完整設備履歷。", en:"Health score = 100 − (repair count share ×40% + high-risk ratio ×40% + average repair days share ×20%). A lower score means the machine needs PM sooner. Click a machine name to view its full history.", th:"คะแนนสุขภาพ = 100 − (สัดส่วนจำนวนซ่อม×40% + สัดส่วนความเสี่ยงสูง×40% + สัดส่วนวันซ่อมเฉลี่ย×20%) คะแนนต่ำหมายถึงควรจัด PM ก่อน คลิกชื่อเครื่องเพื่อดูประวัติเต็ม"},
+  inventoryTitle: {zh:"📦 零件庫存管理", en:"📦 Parts Inventory Management", th:"📦 การจัดการสต็อกอะไหล่"},
+  inventoryPill: {zh:"CMMS 安全庫存", en:"CMMS Safety Stock", th:"สต็อกปลอดภัย CMMS"},
+  inventoryDesc: {zh:"依零件分類的維修頻率換算模擬庫存與安全庫存量（示範用途，實際庫存請串接真實進銷存資料）。低於安全庫存會標示「建議採購」。", en:"Simulated stock and safety-stock levels are derived from repair frequency by part category (for demo purposes; connect real inventory data for production use). Items below safety stock are flagged \"Reorder Suggested\".", th:"สต็อกและสต็อกปลอดภัยจำลองจากความถี่การซ่อมตามหมวดชิ้นส่วน (สำหรับสาธิต ควรเชื่อมข้อมูลสต็อกจริงในการใช้งานจริง) รายการที่ต่ำกว่าสต็อกปลอดภัยจะมีป้าย \"แนะนำสั่งซื้อ\""},
+  stockCurrent: {zh:"目前庫存", en:"Current Stock", th:"สต็อกปัจจุบัน"},
+  stockSafety: {zh:"安全庫存", en:"Safety Stock", th:"สต็อกปลอดภัย"},
+  stockUsage90: {zh:"近90天用量", en:"90-Day Usage", th:"การใช้ 90 วัน"},
+  stockPurchase: {zh:"採購入庫", en:"Stock In", th:"รับเข้าสต็อก"},
+  userMgmtTitle: {zh:"👥 使用者管理", en:"👥 User Management", th:"👥 การจัดการผู้ใช้"},
+  userMgmtPill: {zh:"Administrator Only｜RBAC 權限控管", en:"Administrator Only | RBAC Access Control", th:"เฉพาะผู้ดูแลระบบ | ควบคุมสิทธิ์ RBAC"},
+  userMgmtDesc: {zh:"系統管理員可查看、建立、編輯與刪除 Demo 使用者帳號。此功能使用瀏覽器 localStorage 示範，正式上線時應改接後端資料庫並加密密碼。", en:"Administrators can view, create, edit, and delete demo user accounts. This demo uses browser localStorage; production systems should use a backend database and encrypted passwords.", th:"ผู้ดูแลระบบสามารถดู สร้าง แก้ไข และลบบัญชีตัวอย่างได้ ฟังก์ชันนี้ใช้ localStorage สำหรับสาธิต ระบบจริงควรใช้ฐานข้อมูลหลังบ้านและเข้ารหัสรหัสผ่าน"},
+  addUserBtn: {zh:"＋ 新增使用者", en:"＋ Add User", th:"＋ เพิ่มผู้ใช้"},
   hotspotTitle: {zh:"🔥 故障熱點分析（零件分類 × 風險等級）", en:"🔥 Failure Hotspot Analysis (Part Category × Risk Level)", th:"🔥 วิเคราะห์จุดเสียบ่อย (หมวดชิ้นส่วน × ระดับความเสี่ยง)"},
   hotspotPill: {zh:"顏色越深越需要注意", en:"Darker color = needs more attention", th:"สีเข้มกว่า = ควรให้ความสนใจมากกว่า"},
   hotspotDesc: {zh:"依「零件分類」與「風險等級」交叉統計次數，顏色深淺代表案件數量，快速找出最常出問題的零件與風險組合。", en:"Counts are cross-tabulated by part category and risk level. Color intensity represents case volume to quickly identify the most problematic part/risk combinations.", th:"นับข้อมูลแยกตามหมวดชิ้นส่วนและระดับความเสี่ยง ความเข้มสีแทนจำนวนเคส เพื่อหาชิ้นส่วนและระดับความเสี่ยงที่มีปัญหาบ่อย"},
