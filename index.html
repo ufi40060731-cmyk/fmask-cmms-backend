@@ -784,6 +784,7 @@ body.dark .aiMsg.bot .aiBubble,body.dark .aiSuggestion,body.dark .aiConfigBox,bo
     <div><label data-i18n="repairStatus">維修狀態</label><select id="status"><option value="" data-i18n="all">全部</option></select></div>
     <div><label data-i18n="machineName">機台名稱</label><select id="machine"><option value="" data-i18n="all">全部</option></select></div>
     <div><label data-i18n="partCategory">零件分類</label><select id="part"><option value="" data-i18n="all">全部</option></select></div>
+    <div style="display:flex;align-items:flex-end;"><button class="actionBtn" id="clearFiltersBtn" style="background:#64748b;white-space:nowrap;width:fit-content;" onclick="clearAllFilters()" data-i18n="clearFilters">✕ 清除篩選</button></div>
   </section>
 
   <section class="cards" data-tab-groups="dashboard repair">
@@ -1784,6 +1785,16 @@ function renderTable(data){
       <td>${escapeHtml(displayValue(r["零件分類"] ?? ""))}</td><td>${escapeHtml(r["故障說明"] ?? "")}</td><td>${escapeHtml(r["初步檢查結果"] ?? "")}</td><td>${escapeHtml(r["維修人員"] ?? "")}</td>`;
     tbody.appendChild(tr);
   });
+  if(!pageRows.length){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="12" style="text-align:center;padding:32px 10px;color:#94a3b8;">
+      ${(!records || records.length === 0)
+        ? `📭 ${TT('目前沒有任何維修紀錄，點上方「手動新增維修紀錄」或匯入 Excel 開始使用。','No repair records yet. Use "Add a Repair Record Manually" above or import an Excel file to get started.','ยังไม่มีรายการซ่อม ใช้ "เพิ่มรายการซ่อมด้วยตนเอง" ด้านบนหรือนำเข้าไฟล์ Excel เพื่อเริ่มต้น')}`
+        : `🔍 ${TT('目前篩選條件下沒有符合的維修紀錄，試試看','No repair records match the current filters. Try ','ไม่พบรายการซ่อมที่ตรงกับตัวกรองปัจจุบัน ลอง')}<a href="javascript:void(0)" onclick="clearAllFilters()" style="color:#0f766e;font-weight:700;text-decoration:underline;">${TT('清除篩選條件','clearing filters','ล้างตัวกรอง')}</a>${TT('或調整關鍵字。','.','')}`
+      }
+    </td>`;
+    tbody.appendChild(tr);
+  }
   const info=$('repairPageInfo'), no=$('repairPageNo');
   if(info) info.textContent = sortedData.length ? TT(`顯示第 ${start+1}–${Math.min(start+pageSize,sortedData.length)} 筆，共 ${sortedData.length} 筆（全部資料均已參與統計）`, `Showing ${start+1}–${Math.min(start+pageSize,sortedData.length)} of ${sortedData.length} records (all data included in statistics)`, `แสดง ${start+1}–${Math.min(start+pageSize,sortedData.length)} จาก ${sortedData.length} รายการ (ข้อมูลทั้งหมดถูกนับในสถิติ)`) : TT('共 0 筆','0 records','0 รายการ');
   if(no) no.textContent = `${repairPage} / ${totalPages}`;
@@ -2003,6 +2014,13 @@ function renderMonthlyDashboard(analytics){
 }
 
 /* ================= 篩選選單 ================= */
+function clearAllFilters(){
+  ["keyword","year","risk","status","machine","part"].forEach(id => {
+    const el = $(id);
+    if(el) el.value = "";
+  });
+  update();
+}
 function rebuildFilterOptions(){
   const dl = $("partCategoryList");
   if(dl){
@@ -3627,6 +3645,7 @@ const I18N = {
   ovPmLabel: {zh:"待執行PM件數", en:"Pending PM Items", th:"รายการ PM ที่รอดำเนินการ"},
   ovCostLabel: {zh:"預估停機成本(元)", en:"Estimated Downtime Cost", th:"ประเมินต้นทุนหยุดเครื่อง"},
   ovNotifLabel: {zh:"今日通知件數", en:"Notifications Today", th:"การแจ้งเตือนวันนี้"},
+  clearFilters: {zh:"✕ 清除篩選", en:"✕ Clear Filters", th:"✕ ล้างตัวกรอง"},
   logoutBtn: {zh:"登出", en:"Logout", th:"ออกจากระบบ"},
   toggleDemoInfo: {zh:"顯示／隱藏測試帳號資訊", en:"Show / Hide Test Accounts", th:"แสดง / ซ่อนบัญชีทดสอบ"},
   userModalRoleLabel: {zh:"身分角色", en:"Role", th:"บทบาท"},
