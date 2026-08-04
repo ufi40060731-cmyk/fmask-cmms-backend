@@ -2889,14 +2889,6 @@ function hashStr(s){
 }
 function stockAdjKey(part){ return "stockAdj:" + part; }
 function getStockAdj(part){ return Number(localStorage.getItem(stockAdjKey(part))) || 0; }
-function quickAdjustStock(part, delta){
-  const s = getSession();
-  if(s && s.role === "supervisor"){ alert(TT("Production Supervisor 僅可檢視，無法調整庫存","Production Supervisor can only view; cannot adjust stock","หัวหน้าฝ่ายผลิตดูได้อย่างเดียว ไม่สามารถปรับสต็อกได้")); return; }
-  const cur = getStockAdj(part);
-  const next = cur + delta;
-  localStorage.setItem(stockAdjKey(part), String(next));
-  renderInventory();
-}
 function adjustStockQty(part){
   const s = getSession();
   if(s && s.role === "supervisor"){ alert(TT("Production Supervisor 僅可檢視，無法調整庫存","Production Supervisor can only view; cannot adjust stock","หัวหน้าฝ่ายผลิตดูได้อย่างเดียว ไม่สามารถปรับสต็อกได้")); return; }
@@ -2926,9 +2918,7 @@ function renderInventory(){
       const row = e.target.closest(".stockAdjustRow");
       if(!row) return;
       const part = row.dataset.part;
-      if(e.target.classList.contains("stockQuickBtn")){
-        quickAdjustStock(part, Number(e.target.dataset.delta));
-      }else if(e.target.classList.contains("stockApplyBtn")){
+      if(e.target.classList.contains("stockApplyBtn")){
         adjustStockQty(part);
       }else if(e.target.classList.contains("stockResetBtn")){
         resetStockQty(part);
@@ -2956,16 +2946,12 @@ function renderInventory(){
       <td>${p.recent90Count}</td>
       <td>${low ? `<span class="badge high">⚠ ${TT('建議採購','Reorder Suggested','แนะนำสั่งซื้อ')}</span>` : `<span class="badge low">${TT('正常','Normal','ปกติ')}</span>`}</td>
       <td style="white-space:nowrap;">
-        <div class="stockAdjustRow" data-part="${escapeHtml(p.part)}" style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
-          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="-5" style="background:#dc2626;padding:5px 8px;font-size:11px;" title="${TT('扣減 5','Subtract 5','ลด 5')}">−5</button>
-          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="-1" style="background:#dc2626;padding:5px 8px;font-size:11px;" title="${TT('扣減 1','Subtract 1','ลด 1')}">−1</button>
-          <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="${TT('自訂數量','Custom qty','จำนวนกำหนดเอง')}" style="width:88px;padding:6px 8px;display:inline-block;">
-          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="1" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 1','Add 1','เพิ่ม 1')}">+1</button>
-          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="5" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 5','Add 5','เพิ่ม 5')}">+5</button>
-          <button type="button" class="actionBtn stockPurchaseBtn stockQuickBtn" data-delta="10" style="background:#16a34a;padding:5px 8px;font-size:11px;" title="${TT('增加 10','Add 10','เพิ่ม 10')}">+10</button>
-          <button type="button" class="actionBtn stockPurchaseBtn stockApplyBtn" style="background:#0f766e;padding:6px 10px;font-size:12px;">${TT('套用自訂數量','Apply Custom','ใช้จำนวนกำหนดเอง')}</button>
+        <div class="stockAdjustRow" data-part="${escapeHtml(p.part)}" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <input type="number" id="${inputId}" class="stockPurchaseInput" placeholder="${TT('±數量','±qty','±จำนวน')}" style="width:80px;padding:6px 8px;">
+          <button type="button" class="actionBtn stockPurchaseBtn stockApplyBtn" style="background:#0f766e;padding:6px 10px;font-size:12px;">${TT('套用','Apply','ใช้')}</button>
           <button type="button" class="actionBtn stockPurchaseBtn stockResetBtn" style="background:#64748b;padding:6px 10px;font-size:12px;">${TT('重設','Reset','รีเซ็ต')}</button>
         </div>
+        <div class="small" style="color:#94a3b8;margin-top:2px;">${TT('輸入正數增加、負數減少','Enter positive to add, negative to subtract','ใส่บวกเพื่อเพิ่ม ลบเพื่อลด')}</div>
       </td>
     `;
     body.appendChild(tr);
