@@ -3079,7 +3079,7 @@ function buildPmByDay(y,m){
         if(!pmByDay[d]) pmByDay[d] = [];
         const autoKey = `auto:${encodeURIComponent((p.machine||"")+"|"+(p.part||""))}:${formatDate(p.nextDate)}`;
         const autoState = getAutoPmState();
-        pmByDay[d].push({type:"auto", title:p.part, machine:p.machine, requiredParts:[p.part], status:autoState[autoKey] || "待執行", owner:"系統預測", riskLevel:p.riskLevel, fault:p.faultSample, note:`風險分數 ${p.score}`});
+        pmByDay[d].push({type:"auto", title:p.part, machine:p.machine, requiredParts:[p.part], status:autoState[autoKey] || "待執行", owner:TT("系統預測","System Prediction","ระบบคาดการณ์"), riskLevel:p.riskLevel, fault:p.faultSample, note:TT(`風險分數 ${p.score}`,`Risk score ${p.score}`,`คะแนนความเสี่ยง ${p.score}`)});
       }
     });
   }
@@ -3115,9 +3115,9 @@ function renderCalendar(){
     const autoCount = items.filter(x=>x.type==="auto").length;
     const manualCount = items.filter(x=>x.type==="manual").length;
     html += `<div class="calCell ${isToday?'calToday':''} ${isSelected?'calSelected':''}" onclick="selectCalDay(${d})">
-      <div class="calDate">${d}${isToday ? ' <span style="color:#0f766e;font-size:10px;">今日</span>' : ''}</div>
-      ${autoCount ? `<div class="calPm auto">建議PM ${autoCount}件</div>` : ""}
-      ${manualCount ? `<div class="calPm manual">手動PM ${manualCount}件</div>` : ""}
+      <div class="calDate">${d}${isToday ? ` <span style="color:#0f766e;font-size:10px;">${TT('今日','Today','วันนี้')}</span>` : ''}</div>
+      ${autoCount ? `<div class="calPm auto">${TT(`建議PM ${autoCount}件`,`Suggested PM: ${autoCount}`,`แนะนำ PM: ${autoCount}`)}</div>` : ""}
+      ${manualCount ? `<div class="calPm manual">${TT(`手動PM ${manualCount}件`,`Manual PM: ${manualCount}`,`PM ด้วยตนเอง: ${manualCount}`)}</div>` : ""}
     </div>`;
   }
   grid.innerHTML = html;
@@ -3153,7 +3153,7 @@ function showCalDay(d){
       <div class="pmTaskHead">
         <div>
           <div class="pmTaskMachine">🏭 ${escapeHtml(item.machine || TT("未指定設備","Unspecified machine","ไม่ระบุเครื่องจักร"))}</div>
-          <div style="font-weight:900;margin-top:4px;">🛠 ${escapeHtml(item.title || item.part || TT("PM項目","PM Item","รายการ PM"))}</div>
+          <div style="font-weight:900;margin-top:4px;">🛠 ${escapeHtml(displayValue(item.title || item.part || TT("PM項目","PM Item","รายการ PM")))}</div>
           <div class="pmTaskMeta">${TT("狀態：","Status: ","สถานะ: ")}${escapeHtml(displayValue(item.status || "待執行"))}｜${TT("負責：","Owner: ","ผู้รับผิดชอบ: ")}${escapeHtml(item.owner || TT("未指定","Unassigned","ไม่ระบุ"))}${item.riskLevel ? `｜${TT("風險：","Risk: ","ความเสี่ยง: ")}${escapeHtml(displayValue(item.riskLevel))}` : ""}${item.fault ? `<br>${TT("最近故障：","Recent fault: ","ปัญหาล่าสุด: ")}${escapeHtml(item.fault)}` : ""}${item.note ? `<br>${TT("備註：","Note: ","หมายเหตุ: ")}${escapeHtml(item.note)}` : ""}</div>
         </div>
         <div style="display:flex;gap:7px;flex-wrap:wrap;">
@@ -3489,17 +3489,19 @@ function exportMonthlyReport(){
   const pmTotal = analytics.parts.length || 0;
   const pmDone = analytics.parts.filter(p=>pmState[p.part] && pmState[p.part].status === "已完成").length;
   const pmRate = pmTotal ? Math.round(pmDone/pmTotal*100) : 0;
-  const body = `<html><head><meta charset="utf-8"><title>F-Mask主管月報</title></head><body>
-    <h1>F-Mask CMMS 主管月報</h1><p>月份：${latestMonth}｜產生時間：${new Date().toLocaleString()}</p>
-    <h2>一、本月KPI</h2><ul><li>維修總件數：${records.length}</li><li>PM完成率：${pmRate}%</li><li>MTBF：${mt.mtbf==null?"資料不足":mt.mtbf.toFixed(1)+"天"}</li><li>MTTR：${mt.mttr==null?"資料不足":mt.mttr.toFixed(1)+"天"}</li></ul>
-    <h2>二、AI保養建議</h2><ol>${topParts.map(p=>`<li>${p.part}：風險分數 ${p.score}，建議日期 ${formatDate(p.nextDate)}，建議動作 ${p.actionLabel}</li>`).join("")}</ol>
-    <h2>三、成本TOP項目</h2><table border="1" cellspacing="0" cellpadding="5"><tr><th>零件</th><th>件數</th><th>合計成本</th><th>建議</th></tr>${costRows.map(r=>`<tr><td>${r.part}</td><td>${r.count}</td><td>${r.total.toLocaleString()}</td><td>${r.high>0?"優先PM與備料":"例行追蹤"}</td></tr>`).join("")}</table>
-    <h2>四、下月工作重點</h2><p>優先處理高風險未結案、PM逾期項目與低於安全庫存的零件，並於下次會議追蹤完成率。</p>
+  const notEnough = TT("資料不足","Insufficient data","ข้อมูลไม่เพียงพอ");
+  const days = TT("天"," days"," วัน");
+  const body = `<html><head><meta charset="utf-8"><title>${TT("F-Mask主管月報","F-Mask Management Monthly Report","รายงานประจำเดือนสำหรับหัวหน้า F-Mask")}</title></head><body>
+    <h1>${TT("F-Mask CMMS 主管月報","F-Mask CMMS Management Monthly Report","รายงานประจำเดือน F-Mask CMMS")}</h1><p>${TT("月份：","Month: ","เดือน: ")}${latestMonth}｜${TT("產生時間：","Generated: ","สร้างเมื่อ: ")}${new Date().toLocaleString()}</p>
+    <h2>${TT("一、本月KPI","1. This Month's KPIs","1. ตัวชี้วัดเดือนนี้")}</h2><ul><li>${TT("維修總件數：","Total Repairs: ","จำนวนซ่อมทั้งหมด: ")}${records.length}</li><li>${TT("PM完成率：","PM Completion Rate: ","อัตราความสำเร็จ PM: ")}${pmRate}%</li><li>MTBF：${mt.mtbf==null?notEnough:mt.mtbf.toFixed(1)+days}</li><li>MTTR：${mt.mttr==null?notEnough:mt.mttr.toFixed(1)+days}</li></ul>
+    <h2>${TT("二、AI保養建議","2. AI Maintenance Suggestions","2. คำแนะนำ PM จาก AI")}</h2><ol>${topParts.map(p=>`<li>${displayValue(p.part)}：${TT("風險分數","risk score","คะแนนความเสี่ยง")} ${p.score}，${TT("建議日期","suggested date","วันที่แนะนำ")} ${formatDate(p.nextDate)}，${TT("建議動作","suggested action","การดำเนินการที่แนะนำ")} ${p.actionLabel}</li>`).join("")}</ol>
+    <h2>${TT("三、成本TOP項目","3. Top Cost Items","3. รายการต้นทุนสูงสุด")}</h2><table border="1" cellspacing="0" cellpadding="5"><tr><th>${TT("零件","Part","ชิ้นส่วน")}</th><th>${TT("件數","Count","จำนวน")}</th><th>${TT("合計成本","Total Cost","ต้นทุนรวม")}</th><th>${TT("建議","Suggestion","คำแนะนำ")}</th></tr>${costRows.map(r=>`<tr><td>${displayValue(r.part)}</td><td>${r.count}</td><td>${r.total.toLocaleString()}</td><td>${r.high>0?TT("優先PM與備料","Prioritize PM & Stock","จัด PM และสำรองก่อน"):TT("例行追蹤","Routine Tracking","ติดตามตามปกติ")}</td></tr>`).join("")}</table>
+    <h2>${TT("四、下月工作重點","4. Next Month's Priorities","4. สิ่งที่ต้องทำเดือนหน้า")}</h2><p>${TT("優先處理高風險未結案、PM逾期項目與低於安全庫存的零件，並於下次會議追蹤完成率。","Prioritize high-risk open cases, overdue PM items, and parts below safety stock, and track completion rate at the next meeting.","ให้ความสำคัญกับเคสความเสี่ยงสูงที่ยังไม่ปิด รายการ PM ที่เกินกำหนด และชิ้นส่วนต่ำกว่าสต็อกปลอดภัย และติดตามอัตราความสำเร็จในการประชุมครั้งถัดไป")}</p>
   </body></html>`;
   const blob = new Blob(['﻿', body], {type:'application/msword'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `F-Mask主管月報_${latestMonth || new Date().toISOString().slice(0,10)}.doc`;
+  link.download = `${TT("F-Mask主管月報","F-Mask_Management_Report","F-Mask_รายงานหัวหน้า")}_${latestMonth || new Date().toISOString().slice(0,10)}.doc`;
   link.click();
 }
 
@@ -3916,10 +3918,10 @@ const MACHINE_WORD_I18N = [
   [/分條機（裁切包邊布）/g, {en:"Slitting Machine (Binding Fabric Cutting)", th:"เครื่องตัดแถบ (ตัดผ้าขอบ)"}],
   [/沖床機（口罩沖壓）/g, {en:"Punch Press (Mask Stamping)", th:"เครื่องปั๊ม (ปั๊มหน้ากาก)"}],
   [/空壓機（螺桿式）/g, {en:"Air Compressor (Screw Type)", th:"เครื่องอัดอากาศ (แบบสกรู)"}],
+  [/薄膜分條機/g, {en:"Film Slitting Machine", th:"เครื่องตัดแถบฟิล์ม"}],
   [/口罩機/g, {en:"Mask Machine", th:"เครื่องผลิตหน้ากาก"}],
   [/超音波機/g, {en:"Ultrasonic Machine", th:"เครื่องอัลตราโซนิก"}],
   [/分條機/g, {en:"Slitting Machine", th:"เครื่องตัดแถบ"}],
-  [/薄膜分條機/g, {en:"Film Slitting Machine", th:"เครื่องตัดแถบฟิล์ม"}],
   [/沖床機/g, {en:"Punch Press", th:"เครื่องปั๊ม"}],
   [/空壓機/g, {en:"Air Compressor", th:"เครื่องอัดอากาศ"}],
   [/空調/g, {en:"Air Conditioning", th:"เครื่องปรับอากาศ"}],
