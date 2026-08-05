@@ -1813,7 +1813,7 @@ function renderCharts(data){
   riskChart = makeChart(riskChart,"riskChart","doughnut",Object.keys(riskObj).map(displayValue),Object.values(riskObj),t("count"));
 
   const mach = Object.entries(countBy(data,"機台名稱")).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  machineChart = makeChart(machineChart,"machineChart","bar",mach.map(x=>x[0]),mach.map(x=>x[1]),t("repairCount"),{indexAxis:"y",plugins:{legend:{display:false}}});
+  machineChart = makeChart(machineChart,"machineChart","bar",mach.map(x=>displayMachineName(x[0])),mach.map(x=>x[1]),t("repairCount"),{indexAxis:"y",plugins:{legend:{display:false}}});
 
   const part = Object.entries(countBy(data,"零件分類")).sort((a,b)=>b[1]-a[1]).slice(0,10);
   partChart = makeChart(partChart,"partChart","bar",part.map(x=>displayValue(x[0])),part.map(x=>x[1]),t("count"),{plugins:{legend:{display:false}}});
@@ -3339,17 +3339,18 @@ function renderTechPerf(){
   const groups = {};
   records.forEach(r => {
     const tech = r["維修人員"];
+    if(!tech) return;
     if(!groups[tech]) groups[tech] = [];
     groups[tech].push(r);
   });
   let html = `<table style="width:100%;border-collapse:collapse;"><thead><tr style="text-align:left;">
-    <th style="padding:8px;">維修員</th><th style="padding:8px;">件數</th><th style="padding:8px;">平均天數</th><th style="padding:8px;">完成率</th></tr></thead><tbody>`;
+    <th style="padding:8px;">${TT('維修員','Technician','ช่างซ่อม')}</th><th style="padding:8px;">${TT('件數','Count','จำนวน')}</th><th style="padding:8px;">${TT('平均天數','Avg. Days','วันเฉลี่ย')}</th><th style="padding:8px;">${TT('完成率','Completion Rate','อัตราสำเร็จ')}</th></tr></thead><tbody>`;
   Object.entries(groups).forEach(([tech, list]) => {
     const days = list.map(r=>Number(r["維修天數"])||0);
     const avg = (days.reduce((a,b)=>a+b,0)/days.length).toFixed(1);
     const done = list.filter(r=>r["維修狀態"]==="已完成").length;
     const rate = Math.round((done/list.length)*100);
-    html += `<tr><td style="padding:8px;">${tech}</td><td style="padding:8px;">${list.length}</td><td style="padding:8px;">${avg}</td><td style="padding:8px;">${rate}%</td></tr>`;
+    html += `<tr><td style="padding:8px;">${escapeHtml(tech)}</td><td style="padding:8px;">${list.length}</td><td style="padding:8px;">${avg}</td><td style="padding:8px;">${rate}%</td></tr>`;
   });
   html += "</tbody></table>";
   el.innerHTML = html;
