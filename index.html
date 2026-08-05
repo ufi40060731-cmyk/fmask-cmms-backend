@@ -1782,8 +1782,9 @@ function renderTable(data){
       <td>${escapeHtml(r["申請日期"] ?? "")}</td><td>${escapeHtml(r["維修天數"] ?? "")}</td>
       <td><span class="${badgeStatus(r["維修狀態"])}">${escapeHtml(displayValue(r["維修狀態"] ?? ""))}</span></td>
       <td><span class="${badgeRisk(r["風險等級"])}">${escapeHtml(displayValue(r["風險等級"] ?? ""))}</span></td>
-      <td>${escapeHtml(displayValue(r["零件分類"] ?? ""))}</td><td>${escapeHtml(r["故障說明"] ?? "")}</td><td>${escapeHtml(r["初步檢查結果"] ?? "")}</td><td>${escapeHtml(r["維修人員"] ?? "")}</td>`;
+      <td>${escapeHtml(displayValue(r["零件分類"] ?? ""))}</td><td class="ltFault">${escapeHtml(r["故障說明"] ?? "")}</td><td>${escapeHtml(r["初步檢查結果"] ?? "")}</td><td>${escapeHtml(r["維修人員"] ?? "")}</td>`;
     tbody.appendChild(tr);
+    if(r["故障說明"]) liveTranslateInto(tr.querySelector(".ltFault"), r["故障說明"]);
   });
   if(!pageRows.length){
     const tr = document.createElement("tr");
@@ -2817,7 +2818,11 @@ function openMachineModal(machine){
   $("mmAvgDays").textContent = avgDays + TT(" 天"," days"," วัน");
   $("mmStars").textContent = "★".repeat(starCount) + "☆".repeat(5-starCount);
   const recent = list.slice().sort((a,b)=>(parseDateSafe(b["申請日期"])||0)-(parseDateSafe(a["申請日期"])||0)).slice(0,10);
-  $("mmRecent").innerHTML = `<div class="timeline">${recent.map(r => `<div class="timelineItem"><div class="timelineDate">${escapeHtml(r["申請日期"]||"")}｜${escapeHtml(r["維修單號"]||"")}</div><div><span class="${badgeRisk(r["風險等級"])}">${escapeHtml(displayValue(r["風險等級"]))}</span> <span class="${badgeStatus(r["維修狀態"])}">${escapeHtml(displayValue(r["維修狀態"]))}</span></div><div style="margin-top:6px;">${escapeHtml(r["故障說明"]||"")}</div><div class="small">${TT("零件：","Part: ","ชิ้นส่วน: ")}${escapeHtml(displayValue(r["零件分類"]||"其他"))}｜${TT("維修天數：","Repair days: ","วันซ่อม: ")}${escapeHtml(r["維修天數"]||"-")}${r["維修人員"]?"｜"+TT("維修人員：","Technician: ","ช่างซ่อม: ")+escapeHtml(r["維修人員"]):""}</div></div>`).join("")}</div>`;
+  $("mmRecent").innerHTML = `<div class="timeline">${recent.map(r => `<div class="timelineItem"><div class="timelineDate">${escapeHtml(r["申請日期"]||"")}｜${escapeHtml(r["維修單號"]||"")}</div><div><span class="${badgeRisk(r["風險等級"])}">${escapeHtml(displayValue(r["風險等級"]))}</span> <span class="${badgeStatus(r["維修狀態"])}">${escapeHtml(displayValue(r["維修狀態"]))}</span></div><div class="ltFault" style="margin-top:6px;">${escapeHtml(r["故障說明"]||"")}</div><div class="small">${TT("零件：","Part: ","ชิ้นส่วน: ")}${escapeHtml(displayValue(r["零件分類"]||"其他"))}｜${TT("維修天數：","Repair days: ","วันซ่อม: ")}${escapeHtml(r["維修天數"]||"-")}${r["維修人員"]?"｜"+TT("維修人員：","Technician: ","ช่างซ่อม: ")+escapeHtml(r["維修人員"]):""}</div></div>`).join("")}</div>`;
+  $("mmRecent").querySelectorAll(".ltFault").forEach((el, i) => {
+    const fault = recent[i] && recent[i]["故障說明"];
+    if(fault) liveTranslateInto(el, fault);
+  });
   $("machineModalOverlay").classList.add("show");
 }
 function closeMachineModal(){ $("machineModalOverlay").classList.remove("show"); }
@@ -3154,7 +3159,7 @@ function showCalDay(d){
         <div>
           <div class="pmTaskMachine">🏭 ${escapeHtml(item.machine || TT("未指定設備","Unspecified machine","ไม่ระบุเครื่องจักร"))}</div>
           <div style="font-weight:900;margin-top:4px;">🛠 ${escapeHtml(displayValue(item.title || item.part || TT("PM項目","PM Item","รายการ PM")))}</div>
-          <div class="pmTaskMeta">${TT("狀態：","Status: ","สถานะ: ")}${escapeHtml(displayValue(item.status || "待執行"))}｜${TT("負責：","Owner: ","ผู้รับผิดชอบ: ")}${escapeHtml(item.owner || TT("未指定","Unassigned","ไม่ระบุ"))}${item.riskLevel ? `｜${TT("風險：","Risk: ","ความเสี่ยง: ")}${escapeHtml(displayValue(item.riskLevel))}` : ""}${item.fault ? `<br>${TT("最近故障：","Recent fault: ","ปัญหาล่าสุด: ")}${escapeHtml(item.fault)}` : ""}${item.note ? `<br>${TT("備註：","Note: ","หมายเหตุ: ")}${escapeHtml(item.note)}` : ""}</div>
+          <div class="pmTaskMeta">${TT("狀態：","Status: ","สถานะ: ")}${escapeHtml(displayValue(item.status || "待執行"))}｜${TT("負責：","Owner: ","ผู้รับผิดชอบ: ")}${escapeHtml(item.owner || TT("未指定","Unassigned","ไม่ระบุ"))}${item.riskLevel ? `｜${TT("風險：","Risk: ","ความเสี่ยง: ")}${escapeHtml(displayValue(item.riskLevel))}` : ""}${item.fault ? `<br>${TT("最近故障：","Recent fault: ","ปัญหาล่าสุด: ")}<span class="ltFault">${escapeHtml(item.fault)}</span>` : ""}${item.note ? `<br>${TT("備註：","Note: ","หมายเหตุ: ")}${escapeHtml(item.note)}` : ""}</div>
         </div>
         <div style="display:flex;gap:7px;flex-wrap:wrap;">
           ${canEdit ? `<button class="pmStatusBtn ${isDone?'done':'todo'}" onclick="togglePmDone('${key.replace(/'/g,"\\'")}')">${isDone?TT('✓ 已完成','✓ Completed','✓ เสร็จสิ้น'):TT('標記完成','Mark Complete','ทำเครื่องหมายเสร็จ')}</button>` : ""}
@@ -3175,6 +3180,7 @@ function showCalDay(d){
       <button class="actionBtn" style="background:#16a34a;" onclick="addManualPm('${dateStr}')">${TT('新增PM','Add PM','เพิ่ม PM')}</button>
     </div>` : "";
   $("calDayDetail").innerHTML = `<div class="pmDayPanel"><strong>📅 ${y}/${m}/${d} ${TT('工作與補件清單','Task & Backfill List','รายการงานและการเติมของ')}</strong>${summary}${rows}${editHtml}</div>`;
+  $("calDayDetail").querySelectorAll(".ltFault").forEach(el => liveTranslateInto(el, el.textContent));
 }
 function getAutoPmState(){ try{return JSON.parse(localStorage.getItem("autoPmStatus")||"{}");}catch(e){return {};} }
 function togglePmDone(key){
@@ -3861,6 +3867,12 @@ const VALUE_I18N = {
   "低風險": {en:"Low Risk", th:"ความเสี่ยงต่ำ"},
   "中風險": {en:"Medium Risk", th:"ความเสี่ยงปานกลาง"},
   "高風險": {en:"High Risk", th:"ความเสี่ยงสูง"},
+  "高": {en:"High", th:"สูง"},
+  "中": {en:"Medium", th:"ปานกลาง"},
+  "低": {en:"Low", th:"ต่ำ"},
+  "待執行": {en:"Pending", th:"รอดำเนินการ"},
+  "執行中": {en:"In Progress", th:"กำลังดำเนินการ"},
+  "延期": {en:"Postponed", th:"เลื่อนออกไป"},
   "保險絲": {en:"Fuse", th:"ฟิวส์"},
   "其他": {en:"Other", th:"อื่นๆ"},
   "滾輪": {en:"Roller", th:"ลูกกลิ้ง"},
@@ -3944,6 +3956,41 @@ function displayMachineName(name){
     re.lastIndex = 0;
   });
   return changed ? out : v;
+}
+/* ================= 故障說明等自由文字的即時翻譯（需要網路連線） ================= */
+const LT_CACHE_PREFIX = "liveTrans:";
+let ltQueueActive = 0;
+const LT_MAX_CONCURRENT = 3;
+function ltCacheGet(text, lang){
+  try{ return localStorage.getItem(LT_CACHE_PREFIX + lang + ":" + text); }catch(e){ return null; }
+}
+function ltCacheSet(text, lang, translated){
+  try{ localStorage.setItem(LT_CACHE_PREFIX + lang + ":" + text, translated); }catch(e){ /* localStorage 滿了就跳過快取，不影響功能 */ }
+}
+async function ltFetch(text, lang){
+  const pair = lang === "en" ? "zh-CN|en" : "zh-CN|th";
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error("translate api error");
+  const data = await res.json();
+  const translated = data?.responseData?.translatedText;
+  if(!translated || /MYMEMORY WARNING|INVALID/.test(translated)) throw new Error("translate api rejected");
+  return translated;
+}
+// 對某個 DOM 元素做「先顯示原文、翻譯好了再悄悄換上去」的即時翻譯；有快取就直接套用，不用等網路
+function liveTranslateInto(el, text){
+  if(!el || !text || currentLang === "zh") return;
+  const cached = ltCacheGet(text, currentLang);
+  if(cached){ el.textContent = cached; return; }
+  if(ltQueueActive >= LT_MAX_CONCURRENT){
+    setTimeout(() => liveTranslateInto(el, text), 300);
+    return;
+  }
+  ltQueueActive++;
+  ltFetch(text, currentLang).then(translated => {
+    ltCacheSet(text, currentLang, translated);
+    if(document.body.contains(el)) el.textContent = translated;
+  }).catch(() => { /* 翻譯服務失敗或無網路時，維持顯示原文，不影響功能 */ }).finally(() => { ltQueueActive--; });
 }
 function displayValue(v){
   if(currentLang === "zh") return v;
